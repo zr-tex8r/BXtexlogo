@@ -1,0 +1,592 @@
+% bxtexlogo.sty
+
+%% package declaration
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{bxtexlogo}
+
+%% preparation
+\def\bxlg@pkgname{bxtexlogo}[2016/04/01 v0.2]
+\providecommand\bxDebug[1]{}
+
+%--------------------------------------- general
+
+%% packages
+\IfFileExists{hologo.sty}{%
+\RequirePackageWithOptions{hologo}
+}{}
+
+%% hologo import list
+\def\bxlg@hologo@import@primary{%
+  AmSLaTeX,AmSTeX,BibTeX,ConTeXt,eTeX,LaTeX,LaTeXe,%
+  LuaLaTeX,LuaTeX,LyX,METAFONT,METAPOST,pdfTeX,pdfLaTeX,%
+  TeX,XeLaTeX,XeTeX}
+\def\bxlg@hologo@import@secondary{%
+  HanTheThanh,KOMAScript,LaTeXTeX,NTS,PiCTeX,SageTeX,%
+  SLiTeX,teTeX,TTH}
+\@onlypreamble\bxlg@hologo@import@primary
+\@onlypreamble\bxlg@hologo@import@secondary
+
+%% constants
+\def\bxlg@@star{*}
+\def\bxlg@@dblstar{**}
+
+%% variables
+\newif\ifbxlg@ok
+\newif\ifbxlg@forced
+\newif\ifbxlg@onego
+\newif\ifbxlg@hologo@ok
+
+%% unique tokens
+\def\bxlg@end{\bxlg@end@}
+\def\bxlg@mk{\bxlg@mk@}
+
+%% errors
+\def\bxlg@err@ukval#1{\PackageError\bxlg@pkgname
+ {Unknown value '#1'}%
+ {\@eha}}
+
+%% \bxlg@cond\ifXXX..\fi{<T>}{<F>}
+\@gobbletwo\if\if \def\bxlg@cond#1\fi{%
+  #1\expandafter\@firstoftwo
+  \else \expandafter\@secondoftwo\fi}
+
+%% \bxlg@jump@exit...\bxlg@exit
+\@gobble\if \long\def\bxlg@jump@exit#1\bxlg@exit{\fi}
+\let\bxlg@exit\relax
+
+%% \bxlg@logo@do{<text-form>}{<LaTeX-form>}
+% Uses \texorpdfstring if available.
+\def\bxlg@logo@do{%
+  \bxlg@cond\ifx\texorpdfstring\@undefined\fi
+      {\@firstoftwo}{\texorpdfstring}}
+
+%% \hologo fallback
+\@ifundefined{hologo}{%
+  \bxlg@hologo@okfalse
+  \DeclareRobustCommand*\hologo[1]{%
+    \PackageError\bxlg@pkgname
+     {The command '\@backslashchar#1' is not available,\MessageBreak
+      because the package 'hologo' is not found}%
+     {\@ehc}%
+     #1}
+}{%else
+  \bxlg@hologo@oktrue
+}
+
+%--------------------------------------- registration
+
+%% constants
+\chardef\bxlg@level@@primary=1
+\chardef\bxlg@level@@secondary=2
+
+%% variables
+\let\bxlg@list\@empty
+%\[bxlg@flag@@<name>]% level value
+%\[bxlg@logo@@<name>]% real definition
+%\[bxlg@lcmd@@<name>]% core definition
+
+%%<+> \bxtexlogoDeclare{<level>}{<name>}[<text-form>]{<LaTeX-form>}
+\@onlypreamble\bxtexlogoDeclare
+\newcommand*\bxtexlogoDeclare[2]{%{<level>}{<name>}
+  \@ifnextchar[%
+   {\bxlg@declare@a{#1}{#2}}%
+   {\bxlg@declare@a{#1}{#2}[#2]}}
+\@onlypreamble\bxlg@declare@a
+\def\bxlg@declare@a#1{%
+  \begingroup
+    \expandafter\bxlg@declare@b\csname bxlg@level@@#1\endcsname{#1}}
+\@onlypreamble\bxlg@declare@b
+\def\bxlg@declare@b#1#2#3[#4]{% \LEVEL{<level>}{<name>}[<text>]
+  \ifx#1\relax
+    \bxlg@err@ukval{#2}%
+    \def\bxlg@next{\endgroup}%
+  \else
+    \g@addto@macro\bxlg@list{\do{#3}}%
+    \global\expandafter\let\csname bxlg@flag@@#3\endcsname#1%
+    \def\bxlg@next{\bxlg@declare@c{#3}{#4}}%
+  \fi
+  \afterassignment\bxlg@next \toks@}% read {<LaTeX>}
+\@onlypreamble\bxlg@declare@c
+\def\bxlg@declare@c#1{%{<name>}
+  \expandafter\bxlg@declare@d\csname bxlg@lcmd@@#1\expandafter
+      \endcsname\csname bxlg@logo@@#1\endcsname}
+\@onlypreamble\bxlg@declare@d
+\def\bxlg@declare@d#1#2#3{%\LCMD\LOGO{<text>}
+    \ifx\bxlg@mk#3\bxlg@mk \gdef#1{\protect#2}%
+    \else \gdef#1{\bxlg@logo@do{\protect#2}{#3}}%
+    \fi
+    \xdef#2{\the\toks@}%
+  \endgroup}
+
+%%<+> \bxtexlogoTest
+% The test output.
+\newcommand*\bxtexlogoTest{%
+  \par \let\do\bxlg@logo@test@do \bxlg@list}
+\def\bxlg@logo@test@do#1{%
+  \texttt{#1}:\quad\@nameuse{bxlg@logo@@#1}\par}
+
+%% import form hologo
+\def\bxlg@tmpa#1#2{%
+  \bxtexlogoDeclare{#1}{#2}[]{\hologo{#2}}}
+\@for\bxlg@tmpb:=\bxlg@hologo@import@primary\do{%
+  \edef\bxlg@next{\noexpand\bxlg@tmpa{primary}{\bxlg@tmpb}%
+  }\bxlg@next}
+\@for\bxlg@tmpb:=\bxlg@hologo@import@secondary\do{%
+  \edef\bxlg@next{\noexpand\bxlg@tmpa{secondary}{\bxlg@tmpb}%
+  }\bxlg@next}
+
+%--------------------------------------- registry
+
+%% very famous somewhere
+\bxtexlogoDeclare{primary}{pTeX}{p\kern-.05em\TeX}
+\bxtexlogoDeclare{primary}{epTeX}[e-pTeX]{%
+  \mbox{\bxlg@epsilon-\bxlg@logo@@pTeX}}
+\bxtexlogoDeclare{primary}{pLaTeX}[]{p\LaTeX}
+\bxtexlogoDeclare{primary}{pLaTeXe}[]{p\LaTeXe}
+\bxtexlogoDeclare{primary}{upTeX}{up\kern-.05em \TeX}
+\bxtexlogoDeclare{primary}{eupTeX}[e-upTeX]{%
+  \mbox{\bxlg@epsilon-\bxlg@logo@@upTeX}}
+\bxtexlogoDeclare{primary}{upLaTeX}[]{up\LaTeX}
+\bxtexlogoDeclare{primary}{upLaTeXe}[]{up\LaTeXe}
+\bxtexlogoDeclare{primary}{JBibTeX}{%
+  \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.15}\hologo{BibTeX}}
+\bxtexlogoDeclare{primary}{pBibTeX}[]{p\hologo{BibTeX}}
+
+%% old things
+\bxtexlogoDeclare{secondary}{JTeX}{%
+  \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.17}\TeX}
+\bxtexlogoDeclare{secondary}{JLaTeX}{%
+  \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.15}\LaTeX}
+\bxtexlogoDeclare{secondary}{pTeXsT}{%
+  p\kern-.21em \TeX\kern-.10em s\kern-.21em T}
+\bxtexlogoDeclare{secondary}{XyM}{%
+  X\kern-.30em %
+  \smash{\raise.50ex\hbox to0.8em{\hss\bxlg@Grk{7}\hss}}%
+  \kern -.30em M}
+\bxtexlogoDeclare{secondary}{XyMTeX}{%
+  \bxlg@logo@@XyM \kern-.1em \TeX}
+\bxtexlogoDeclare{secondary}{KETpic}{%
+  K\kern-.16em \lower.5ex\hbox{E}\kern-.12emTpic}
+\bxtexlogoDeclare{secondary}{logoOmega}[Omega]{\bxlg@Grk{10}}
+\bxtexlogoDeclare{secondary}{logoLambda}[Lambda]{\bxlg@Grk{3}}
+\bxtexlogoDeclare{secondary}{logoAleph}[Aleph]{\bxlg@Aleph}
+\bxtexlogoDeclare{secondary}{logoLamed}[Lamed]{\bxlg@Lamed}
+
+%% fancy things (Not!)
+\bxtexlogoDeclare{secondary}{BaSiX}{%
+  B\kern-.18em \lower.45ex\hbox{A}\kern-.15em %
+  S\kern-.1em \lower.45ex\hbox{I}\kern-.1em X}
+\bxtexlogoDeclare{secondary}{logoon}[on]{\bxtexlogoSmcp{on}}
+\bxtexlogoDeclare{secondary}{TeXonLaTeX}[TeX on LaTeX]{%
+  \TeX\ \bxlg@logo@@logoon\ \LaTeX}
+\bxtexlogoDeclare{secondary}{OneTeX}[1TeX]{%
+  \bxlg@One\kern-0.2em \TeX}
+\bxtexlogoDeclare{secondary}{SuyahTeX}{\bxlg@Suyah\TeX}
+\bxtexlogoDeclare{secondary}{YukidarumaTeX}{\bxlg@Yukidaruma\TeX}
+
+%--------------------------------------- import
+
+%% variables
+\let\bxlg@name\relax
+\let\bxlg@pfx\relax
+
+%%<*> \bxtexlogoimport{<spec-str>}
+\@onlypreamble\bxtexlogoimport
+\newcommand*\bxtexlogoimport{%
+  \bxlg@onegotrue
+  \bxlg@import}
+\@onlypreamble\bxtexlogoImport
+\newcommand*\bxtexlogoImport{%
+  \bxlg@onegofalse
+  \bxlg@import}
+\@onlypreamble\bxlg@import
+\def\bxlg@import#1{%
+  \global\let\bxlg@default@import\relax
+  \@for\bxlg@name:=#1\do{%
+    \begingroup
+      \bxlg@split@name
+      \ifx\bxlg@name\bxlg@@star
+        \bxlg@import@all\bxlg@level@@primary
+      \else\ifx\bxlg@name\bxlg@@dblstar
+        \bxlg@import@all\bxlg@level@@secondary
+      \else\expandafter\ifx\csname bxlg@logo@@\bxlg@name\endcsname\relax
+        \PackageError\bxlg@pkgname
+         {Unknown logo name '\bxlg@name'}\@ehc
+      \else
+        \bxlg@import@one\bxlg@name
+      \fi\fi\fi
+    \endgroup}}
+
+%% \bxlg@import@one
+\@onlypreamble\bxlg@import@one
+\def\bxlg@import@one#1{%
+  \expandafter\ifx\csname\bxlg@pfx#1\endcsname\relax
+    \bxlg@oktrue
+  \else\ifbxlg@forced
+    \bxlg@oktrue
+    \PackageWarning\bxlg@pkgname
+     {'\@backslashchar\bxlg@pfx#1' redefined}%
+  \else \bxlg@okfalse
+  \fi\fi
+  \ifbxlg@onego
+    \global\expandafter\let\csname bxlg@flag@@#1\endcsname\@undefined
+  \fi
+  \ifbxlg@ok
+    \global\expandafter\let\csname\bxlg@pfx#1\expandafter
+        \endcsname\csname bxlg@lcmd@@#1\endcsname
+    \bxDebug{defined: \@backslashchar\bxlg@pfx#1}%
+  \fi}
+
+%% \bxlg@import@all{<level>}
+\@onlypreamble\bxlg@import@all
+\def\bxlg@import@all#1{%
+  \let\bxlg@tmpb#1%
+  \let\do\bxlg@import@all@do \bxlg@list}
+\@onlypreamble\bxlg@import@all@do
+\def\bxlg@import@all@do#1{%
+  \expandafter\ifx\csname bxlg@flag@@#1\endcsname\bxlg@tmpb
+    \bxlg@import@one{#1}%
+  \fi}
+
+%% \bxlg@split@name
+\@onlypreamble\bxlg@split@name
+\def\bxlg@split@name{%
+  \bxlg@split@name@a+\ifx\bxlg@pfx\relax
+    \bxlg@split@name@a-\ifx\bxlg@pfx\relax
+      \bxlg@forcedfalse \let\bxlg@pfx\@empty
+    \else \bxlg@forcedfalse
+    \fi
+  \else \bxlg@forcedtrue
+  \fi}
+\@onlypreamble\bxlg@split@name@a
+\def\bxlg@split@name@a#1{%
+  \def\bxlg@next##1#1##2\bxlg@end{\bxlg@split@name@b{##1}{##2}}%
+  \expandafter\bxlg@next\bxlg@name\bxlg@mk#1\bxlg@end}
+\@onlypreamble\bxlg@split@name@b
+\def\bxlg@split@name@b#1#2{%
+  \ifx\bxlg@end#2\bxlg@end \let\bxlg@pfx\relax
+  \else \def\bxlg@pfx{#1}\bxlg@split@name@c#2\bxlg@end%
+  \fi}
+\@onlypreamble\bxlg@split@name@c
+\def\bxlg@split@name@c#1\bxlg@mk#2\bxlg@end{%
+  \def\bxlg@name{#1}}
+
+%% \bxlg@default@import
+\@onlypreamble\bxlg@default@import
+\def\bxlg@default@import{%
+  \bxtexlogoimport{*}}
+\AtBeginDocument{\bxlg@default@import}
+
+%--------------------------------------- font
+
+%% variables
+\chardef\bxlg@genfam=0
+
+%% \bxlg@find@genfam
+\def\bxlg@find@genfam{%
+  \edef\bxlg@tmpa{\f@family}\chardef\bxlg@genfam=\z@
+  \edef\bxlg@tmpb{\sfdefault}%
+  \ifx\bxlg@tmpa\bxlg@tmpb \chardef\bxlg@genfam=\@ne \fi
+  \edef\bxlg@tmpb{\ttdefault}%
+  \ifx\bxlg@tmpa\bxlg@tmpb \chardef\bxlg@genfam=\tw@ \fi}
+
+%% \bxlg@check@bold
+\def\bxlg@check@bold{%
+  \if b\expandafter\@car\f@series.\@nil \bxlg@oktrue
+  \else \bxlg@okfalse \fi}
+
+%% \bxlg@declare@family{<enc>}{<family>}
+\def\bxlg@declare@family#1#2{%
+  \DeclareFontFamily{#1}{#2}{}%
+  \DeclareFontShape{#1}{#2}{m}{it}{<->ssub*#2/m/n}{}%
+  \DeclareFontShape{#1}{#2}{m}{sl}{<->ssub*#2/m/n}{}%
+  \DeclareFontShape{#1}{#2}{m}{sc}{<->ssub*#2/m/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{n}{<->ssub*#2/m/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{it}{<->ssub*#2/m/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{sl}{<->ssub*#2/m/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{sc}{<->ssub*#2/m/n}{}}
+
+%% \bxlg@warn@font{<str>}
+\def\bxlg@warn@font#1{%
+  \expandafter\ifx\csname bxlg@fpkg@@#1\endcsname\relax\else
+    \PackageWarning\bxlg@pkgname
+     {Logo '#1' cannot be properly rendered\MessageBreak
+      because the font package '\csname bxlg@fpkg@@#1\endcsname'%
+      \MessageBreak is missing,}%
+    \global\expandafter\let\csname bxlg@fpkg@@#1\endcsname\relax
+  \fi}
+
+%% \bxlg@required@font{<str>}{<pkg-name>}
+\@onlypreamble\bxlg@required@fon
+\def\bxlg@required@font#1#2{%
+  \@namedef{bxlg@fpkg@@#1}{#2}}
+
+%% \bxlg@epsilon
+\def\bxlg@epsilon{%
+  \begingroup
+    \bxlg@check@bold \ifbxlg@ok \boldmath \fi
+    $\m@th \varepsilon$%
+  \endgroup}
+
+%% \bxlg@One
+\bxlg@declare@family{U}{bxlgone}
+\def\bxlg@next#1{\DeclareFontShape{U}{bxlgone}{m}{n}{<->#1}{}}
+\IfFileExists{udsrom.fd}{%
+  \bxlg@next{s*[1.44]dsrom10}%
+}{\IfFileExists{ubbm.fd}{%
+  \bxlg@next{s*[1.44]bbm10}%
+}{\IfFileExists{ubbold.fd}{%
+  \bxlg@next{s*[1.44]bbold10}%
+}{%else fallback using ordinary bold
+  \bxlg@next{s*[1.44]cmnx10}%
+}}}
+\def\bxlg@One{\bxtexlogoFontSlant{%
+  \usefont{U}{bxlgone}{m}{n}1}}
+
+%% \bxlg@select@OTi
+\def\bxlg@select@OTi{%
+  \fontencoding{OT1}\selectfont
+  \expandafter\ifx\csname OT1+\f@family\endcsname\@empty
+    \bxlg@find@genfam
+    \ifcase\bxlg@genfam \fontfamily{cmr}\selectfont
+    \or \fontfamily{cmss}\selectfont
+    \or \fontfamily{cmtt}\selectfont
+    \fi
+  \fi}
+
+%% \bxlg@Grk{<slot>}
+\def\bxlg@Grk#1{%
+  \bgroup \bxlg@select@OTi \char#1\relax \egroup}
+
+%% \bxlg@Suyah
+%% \bxlg@Yukidaruma
+\IfFileExists{c70ipxg.fd}{%
+  \bxlg@declare@family{U}{bxlgjasff}%
+  \DeclareFontShape{U}{bxlgjasff}{m}{n}{<->ipxg-r-uff}{}%
+  \def\bxlg@Suyah{\bxtexlogoFontSlant{%
+    \usefont{U}{bxlgjasff}{m}{n}%
+    \char125\bxlg@syt\char148\bxlg@syt\char103 }}%
+  \bxlg@declare@family{U}{bxlgjas26}%
+  \DeclareFontShape{U}{bxlgjas26}{m}{n}{<->s*ipxg-r-u26}{}%
+  \def\bxlg@Yukidaruma{\bxtexlogoFontSlant{%
+    \usefont{U}{bxlgjas26}{m}{n}\char3 }}%
+  \def\bxlg@syt{\kern-0.06em}%
+}{%else
+  \bxlg@required@font{SuyahTeX}{ipaex-type1}%
+  \def\bxlg@Suyah{\bxlg@warn@font{SuyahTeX}%
+    \textsf{Suyah}}%
+  \bxlg@required@font{YukidarumaTeX}{ipaex-type1}%
+  \def\bxlg@Yukidaruma{\bxlg@warn@font{YukidarumaTeX}%
+    \textsf{Yukidaruma}}%
+}
+
+%% \bxlg@Aleph
+%% \bxlg@Lamed
+\IfFileExists{cjhebrew.sty}{%
+  \bxlg@declare@family{U}{bxlghbr}%
+  \DeclareFontShape{U}{bxlghbr}{m}{n}{<->rcjhbltx}{}%
+  \def\bxlg@Aleph{%
+    \bgroup \usefont{U}{bxlghbr}{m}{n}\char39\egroup}%
+  \def\bxlg@Lamed{%
+    \bgroup \usefont{U}{bxlghbr}{m}{n}\char108\egroup}%
+}{%else
+  \bxlg@required@font{logoAleph}{cjhebrew}%
+  \def\bxlg@Aleph{\bxlg@warn@font{logoAleph}\textsf{Aleph}}%
+  \bxlg@required@font{logoLamed}{babel-hebrew}%
+  \def\bxlg@Lamed{\bxlg@warn@font{logoLamed}\textsf{Lamed}}%
+}
+
+%% \bxlg@akern
+\def\bxlg@akern#1{%
+  \begingroup
+    \setbox\z@\hbox{i}%
+    \dimen@\wd\z@ \advance\dimen@-0.2em \dimen@12.8\dimen@
+    \ifdim\dimen@<\z@ \dimen@\z@ \fi
+    \ifdim\dimen@>1em \dimen@1em \fi
+    \kern#1\dimen@
+  \endgroup}
+
+%--------------------------------------- slant
+
+%% variables
+\let\bxlg@slant@val\relax
+
+%%<+> \bxtexlogoFontSlant
+% Uses the slant value of the current font.
+%%<+> \bxtexlogoSlant{<real>}
+\newcommand*\bxtexlogoFontSlant{%
+  \begingroup
+    \@tempdima\fontdimen\@ne\font
+    \bxlg@slant@a}
+\newcommand*\bxtexlogoSlant[1]{%
+  \begingroup
+    \@tempdima=#1\p@
+    \bxlg@slant@a}
+\def\bxlg@slant@a{%
+  \bxlg@implement@slant
+  \edef\bxlg@slant@val{\strip@pt\@tempdima}%
+  \afterassignment\bxlg@slant@b \setbox\z@\hbox}
+\def\bxlg@slant@b{%
+  \aftergroup\bxlg@slant@c}
+\def\bxlg@slant@c{%
+    \leavevmode
+    \ifdim\bxlg@slant@val\p@=\z@ \box\z@
+    \else
+      \@tempdima\wd\z@ \wd\z@\z@
+      \bxlg@slant@start \box\z@ \bxlg@slant@end
+      \kern\@tempdima
+    \fi
+  \endgroup}
+
+%% \bxlg@slant@start
+%% \bxlg@slant@end
+\def\bxlg@slant@start{%
+  \PackageWarning\bxlg@pkgname
+   {Cannot implement synthetic slant, perhaps\MessageBreak
+    'graphics' is not loaded}%
+  \global\let\bxlg@slant@start\relax}
+\let\bxlg@slant@end\relax
+
+%% \bxlg@implement@slant
+\def\bxlg@implement@slant{%
+  \begingroup
+  \chardef\bxlg@tmpb=0
+  \def\bxlg@tmpa{\special{ps: currentpoint grestore moveto}}
+  \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=1 \fi
+  \def\bxlg@tmpa{\special{pdf:etrans}}
+  \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=2 \fi
+  \def\bxlg@tmpa{\pdfrestore}
+  \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=3 \fi
+  \def\bxlg@tmpa{\pdfextension restore\relax}
+  \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=4 \fi
+  \bxDebug{[gdriver=\the\bxlg@tmpb]}%
+  \ifcase\bxlg@tmpb
+    % unknown, then leave unimplmented
+  \or % dvips
+  \or % dvipdfmx
+    \gdef\bxlg@slant@start{\special{%
+      pdf:btrans matrix 1 0 \bxlg@slant@val\space 1 0 0}}
+    \gdef\bxlg@slant@end{\special{pdf:etrans}}
+  \or % pdftex
+    \gdef\bxlg@slant@start{%
+      \pdfsave \pdfsetmatrix{1 0 \bxlg@slant@val\space 1}}
+    \gdef\bxlg@slant@end{\pdfrestore}
+  \or % luatex (new)
+    \gdef\bxlg@slant@start{%
+      \pdfextension save\relax
+      \pdfextension setmatrix{1 0 \bxlg@slant@val\space 1}}
+    \gdef\bxlg@slant@end{\pdfextension restore\relax}
+  \fi
+  \global\let\bxlg@implement@slant\relax
+  \endgroup}
+\AtBeginDocument{\bxlg@implement@slant}
+
+%--------------------------------------- small-caps
+
+%% constants
+\chardef\bxlg@smcp@@auto=0
+\chardef\bxlg@smcp@@real=1
+\chardef\bxlg@smcp@@fake=2
+
+%% variables
+\let\bxlg@use@fake@list\@empty
+\let\bxlg@smcp@mode\bxlg@smcp@@auto
+
+%%<+> \bxtexlogoSmcp{<string>}
+\@ifdefinable\bxtexlogoSmcp{%
+\DeclareRobustCommand\bxtexlogoSmcp[1]{%
+  \bxtexlogoSmcpChoice{\MakeLowercase{#1}}{\MakeUppercase{#1}}}
+}
+
+%%<+> \bxtexlogoSmcpChoice{<text1>}{<text2>}
+\@ifdefinable\bxtexlogoSmcpChoice{%
+\DeclareRobustCommand\bxtexlogoSmcpChoice[2]{%
+  \begingroup
+    \bxlg@check@smcp
+    \ifbxlg@ok \scshape #1%
+    \else \bxlg@fake@smcp #2%
+    \fi
+  \endgroup}
+}
+
+%%<+> \bxtexlogoSmcpAs{<value>}
+% valus: auto, real, fake
+\newcommand*\bxtexlogoSmcpAs[1]{%
+  \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@smcp@@#1\endcsname
+  \ifx\bxlg@tmpa\relax
+    \bxlg@err@ukval{#1}%
+  \else \let\bxlg@smcp@mode\bxlg@tmpa
+  \fi}
+
+%%<+> \bxtexlogoSmcpAsFakeFor
+\newcommand*\bxtexlogoSmcpAsFakeFor[1]{%
+  \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
+
+%% \bxlg@fake@smcp
+\def\bxlg@fake@smcp{%
+  \check@mathfonts
+  \fontsize\sf@size\z@
+  \math@fontsfalse\selectfont
+}
+
+%% \bxlg@check@smcp
+\def\bxlg@check@smcp{%
+  \ifx\bxlg@smcp@mode\bxlg@smcp@@real
+    \bxlg@oktrue
+  \else\ifx\bxlg@smcp@mode\bxlg@smcp@@fake
+    \bxlg@okfalse
+  \else
+    \bxlg@check@smcp@manual
+    \ifbxlg@ok \bxlg@check@smcp@auto \fi
+  \fi\fi
+  \bxDebug{[check->\meaning\ifbxlg@ok]}}
+\def\bxlg@check@smcp@manual{%
+  \bxlg@oktrue
+  \begingroup
+    \@for\bxlg@tmpb:=\bxlg@use@fake@list\do{%
+      \expandafter\bxlg@check@smcp@manual@a\bxlg@tmpb/?/?/?\bxlg@end}%
+  \endgroup
+  \bxDebug{[manual->\meaning\ifbxlg@ok]}}
+\def\bxlg@check@smcp@manual@a#1/#2/#3/#4\bxlg@end{%
+  \bxlg@check@smcp@manual@b{#1}{\f@encoding}%
+  \if@tempswa\else \bxlg@jump@exit \fi
+  \bxlg@check@smcp@manual@b{#2}{\f@family}%
+  \if@tempswa\else \bxlg@jump@exit \fi
+  \bxlg@check@smcp@manual@b{#3}{\f@series}%
+  \if@tempswa\else \bxlg@jump@exit \fi
+  \aftergroup\bxlg@okfalse
+  \bxlg@exit}
+\def\bxlg@check@smcp@manual@b#1#2{%
+  \def\bxlg@tmpa{#1}%
+  \@tempswafalse
+  \ifx\bxlg@@star\bxlg@tmpa \@tempswatrue
+  \else\ifx#2\bxlg@tmpa \@tempswatrue
+  \fi\fi}
+\def\bxlg@check@smcp@auto{%
+  \bxlg@oktrue
+  \begingroup
+    \bxlg@setcurfont\bxlg@fn@orig
+    \edef\bxlg@sl@orig{\ifdim\fontdimen1\font>\z@ 1\else 0\fi}%
+    \scshape
+    \bxlg@setcurfont\bxlg@fn@smcp
+    \edef\bxlg@sl@smcp{\ifdim\fontdimen1\font>\z@ 1\else 0\fi}%
+    \ifx\bxlg@fn@orig\bxlg@fn@smcp
+      \aftergroup\bxlg@okfalse
+    \else\ifnum\bxlg@sl@orig=\bxlg@sl@smcp\else
+      \aftergroup\bxlg@okfalse
+    \fi\fi
+  \endgroup
+  \bxDebug{[auto->\meaning\ifbxlg@ok]}}
+
+%% \bxlg@setcurfont\CS
+\def\bxlg@setcurfont#1{%
+  \edef\bxlg@tempa{\expandafter\meaning\the\font}%
+  \expandafter\bxlg@setcurfont@a\bxlg@tempa\bxlg@mk#1}
+\def\bxlg@setcurfont@a#1 #2 #3\bxlg@mk#4{\def#4{#3}}
+
+%% initial setup
+\bxtexlogoSmcpAs{auto}
+\bxtexlogoSmcpAsFakeFor{*/cmss/*}
+
+%--------------------------------------- done
+\endinput
