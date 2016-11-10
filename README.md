@@ -43,6 +43,9 @@ You can do `\JBibTeX`.
 Revision History
 ----------------
 
+  * Version 0.2a ‹2016/11/11›
+      - Bug fix.
+
   * Version 0.2  ‹2016/04/01›
       - The first public version.
 
