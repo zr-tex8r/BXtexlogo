@@ -40,7 +40,7 @@ You can import logo commands with `\bxtexlogoimport` in your document's preamble
 \bxtexlogoimport{<name>,...}
 ```
 
-You can also specify `*` for importing all commands in level1, and `**` for level2. Here is an example to import every level 1 commands and `\OneTeX` command.
+You can also specify `*` for importing all commands in level 1, and `**` for level 2. Here is an example to import every level 1 commands and `\OneTeX` command.
 
 ```tex
 \bxtexlogoimport{*,OneTeX}
