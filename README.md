@@ -26,19 +26,54 @@ The bxtexlogo Package
 
 ### Package Loading
 
-    \usepackage[<option>,...]{bxtexlogo}
+```tex
+\usepackage[<option>,...]{bxtexlogo}
+```
 
 All the options are passed to hologo.
 
 ### Usage
 
-You can do `\BibTeX`.
+You can import logo commands with `\bxtexlogoimport` in your document's preamble.
 
-You can do `\e-pTeX`.
+```tex
+\bxtexlogoimport{<name>,...}
+```
 
-You can do `\upLaTeX`.
+You can also specify `*` for importing all commands in level 1, and `**` for level 2. Here is an example to import every level 1 commands and `\OneTeX` command.
 
-You can do `\JBibTeX`.
+```tex
+\bxtexlogoimport{*,OneTeX}
+```
+
+#### List of logo commands
+
+| Level | Name          | Command          |
+| --:   | :--           | :--              |
+| 1     | pTeX          | `\pTeX`          |
+| 1     | epTeX         | `\epTeX`         |
+| 1     | pLaTeX        | `\pLaTeX`        |
+| 1     | pLaTeXe       | `\pLaTeXe`       |
+| 1     | upTeX         | `\upTeX`         |
+| 1     | eupTeX        | `\eupTeX`        |
+| 1     | upLaTeX       | `\upLaTeX`       |
+| 1     | upLaTeXe      | `\upLaTeXe`      |
+| 1     | JBibTeX       | `\JBibTeX`       |
+| 1     | pBibTeX       | `\pBibTeX`       |
+| 2     | JTeX          | `\JTeX`          |
+| 2     | JLaTeX        | `\JLaTeX`        |
+| 2     | pTeXsT        | `\pTeXsT`        |
+| 2     | XyMTeX        | `\XyMTeX`        |
+| 2     | KETpic        | `\KETpic`        |
+| 2     | logoOmega     | `\logoOmega`     |
+| 2     | logoLambda    | `\logoLambda`    |
+| 2     | logoAleph     | `\logoAleph`     |
+| 2     | logoLamed     | `\logoLamed`     |
+| 2     | BaSiX         | `\BaSiX`         |
+| 2     | TeXonLaTeX    | `\TeXonLaTeX`    |
+| 2     | OneTeX        | `\OneTeX`        |
+| 2     | SuyahTeX      | `\SuyahTeX`      |
+| 2     | YukidarumaTeX | `\YukidarumaTeX` |
 
 Revision History
 ----------------
