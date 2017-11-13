@@ -1,8 +1,16 @@
-% bxtexlogo.sty
+%%
+%% This is file 'bxtexlogo.sty'.
+%%
+%% Copyright (c) 2017 Takayuki YATO (aka. "ZR")
+%%   GitHub:   https://github.com/zr-tex8r
+%%   Twitter:  @zr_tex8r
+%%
+%% This package is distributed under the MIT License.
+%%
 
 %% package declaration
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{bxtexlogo}[2016/11/11 v0.2a]
+\ProvidesPackage{bxtexlogo}[2017/11/11 v0.3]
 
 %% preparation
 \def\bxlg@pkgname{bxtexlogo}
@@ -151,38 +159,69 @@
 \bxtexlogoDeclare{primary}{JBibTeX}{%
   \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.15}\hologo{BibTeX}}
 \bxtexlogoDeclare{primary}{pBibTeX}[]{p\hologo{BibTeX}}
+\bxtexlogoDeclare{primary}{upBibTeX}[]{up\hologo{BibTeX}}
+\bxtexlogoDeclare{primary}{TikZ}{Ti\textit{k}Z\bxlg@nonuc}
 
-%% old things
+%% old or not-so-famous
 \bxtexlogoDeclare{secondary}{JTeX}{%
   \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.17}\TeX}
 \bxtexlogoDeclare{secondary}{JLaTeX}{%
   \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.15}\LaTeX}
 \bxtexlogoDeclare{secondary}{pTeXsT}{%
-  p\kern-.21em \TeX\kern-.10em s\kern-.21em T}
+  p\kern-.21em \TeX\kern-.10em s\kern-.21em T\bxlg@nonuc}
 \bxtexlogoDeclare{secondary}{XyM}{%
   X\kern-.30em %
   \smash{\raise.50ex\hbox to0.8em{\hss\bxlg@Grk{7}\hss}}%
   \kern -.30em M}
 \bxtexlogoDeclare{secondary}{XyMTeX}{%
   \bxlg@logo@@XyM \kern-.1em \TeX}
+\bxtexlogoDeclare{secondary}{KET}{%
+  K\kern-.16em \lower.5ex\hbox{E}\kern-.12emT}
 \bxtexlogoDeclare{secondary}{KETpic}{%
-  K\kern-.16em \lower.5ex\hbox{E}\kern-.12emTpic}
+  \bxlg@logo@@KET pic}
 \bxtexlogoDeclare{secondary}{logoOmega}[Omega]{\bxlg@Grk{10}}
 \bxtexlogoDeclare{secondary}{logoLambda}[Lambda]{\bxlg@Grk{3}}
 \bxtexlogoDeclare{secondary}{logoAleph}[Aleph]{\bxlg@Aleph}
 \bxtexlogoDeclare{secondary}{logoLamed}[Lamed]{\bxlg@Lamed}
+\bxtexlogoDeclare{secondary}{LaTeXiT}{%
+  \LaTeX \kern-.09em
+  \raise.36ex\hbox{i}\kern-.06em T\bxlg@nonuc}
+\bxtexlogoDeclare{secondary}{LaTeXML}{%
+  \hologo{La}\kern-.15em T\kern-.1667em \lower.5ex\hbox{E}%
+  \bxlg@smaller{XML}\bxlg@nonuc}
+\bxtexlogoDeclare{secondary}{HeVeA}{%
+  H\kern-.08em
+  \begingroup \setbox\z@\hbox{H}%
+    \vbox to\ht\z@{\vss\hbox{\bxlg@smaller{E}}\vss}%
+    \kern-.07em V\kern-.08em
+    \vbox to\ht\z@{\vss\hbox{\bxlg@smaller{E}}\vss}%
+  \endgroup \kern-.09em
+  A\bxlg@nonuc}
+\bxtexlogoDeclare{secondary}{KaTeX}{%
+  K\kern-.26em
+  \begingroup \setbox\z@\hbox{T}%
+    \vbox to\ht\z@{\kern.05em \hbox{\bxlg@smaller{A}}\vss}%
+  \endgroup
+  \kern-.23em \TeX}
 
 %% fancy things (Not!)
 \bxtexlogoDeclare{secondary}{BaSiX}{%
   B\kern-.18em \lower.45ex\hbox{A}\kern-.15em %
-  S\kern-.1em \lower.45ex\hbox{I}\kern-.1em X}
+  S\kern-.1em \lower.45ex\hbox{I}\kern-.1em X\bxlg@nonuc}
 \bxtexlogoDeclare{secondary}{logoon}[on]{\bxtexlogoSmcp{on}}
 \bxtexlogoDeclare{secondary}{TeXonLaTeX}[TeX on LaTeX]{%
   \TeX\ \bxlg@logo@@logoon\ \LaTeX}
 \bxtexlogoDeclare{secondary}{OneTeX}[1TeX]{%
   \bxlg@One\kern-0.2em \TeX}
 \bxtexlogoDeclare{secondary}{SuyahTeX}{\bxlg@Suyah\TeX}
+
+%% the unnamable (Eh?)
 \bxtexlogoDeclare{secondary}{YukidarumaTeX}{\bxlg@Yukidaruma\TeX}
+\bxtexlogoDeclare{secondary}{SATySFi}{%
+  S\kern-0.1em A\kern-0.18em T\kern-0.22em
+  \lower0.2em\hbox{Y}\kern-0.08em
+  S\kern-0.04em F\kern-0.12em
+  \lower0.2em\hbox{I}}
 
 %--------------------------------------- import
 
@@ -406,6 +445,19 @@
     \kern#1\dimen@
   \endgroup}
 
+%% \bxlg@smaller{<text>}
+\def\bxlg@smaller#1{%
+  \begingroup
+    \check@mathfonts
+    \fontsize\sf@size\z@
+    \math@fontsfalse\selectfont
+    #1%
+  \endgroup}
+
+%% \bxlg@nonuc
+\def\bxlg@nonuc{%
+  \spacefactor\@m}
+
 %--------------------------------------- slant
 
 %% variables
@@ -504,7 +556,7 @@
   \begingroup
     \bxlg@check@smcp
     \ifbxlg@ok \scshape #1%
-    \else \bxlg@fake@smcp #2%
+    \else \bxlg@smaller{#2}%
     \fi
   \endgroup}
 }
@@ -521,13 +573,6 @@
 %%<+> \bxtexlogoSmcpAsFakeFor
 \newcommand*\bxtexlogoSmcpAsFakeFor[1]{%
   \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
-
-%% \bxlg@fake@smcp
-\def\bxlg@fake@smcp{%
-  \check@mathfonts
-  \fontsize\sf@size\z@
-  \math@fontsfalse\selectfont
-}
 
 %% \bxlg@check@smcp
 \def\bxlg@check@smcp{%
