@@ -74,7 +74,7 @@ All the options are passed to hologo.
 
 ### Avaiable logo names
 
-The logo names supported by this package are divides into two classes:
+The logo names supported by this package are divided into two classes:
 “primary” (popular software) and “secondary” (all others).
 
 #### Primary logos
@@ -134,6 +134,7 @@ You can bulk-import the secondary logos with `\bxtexlogoimport{**}`.
 
 (Logos provided by this package)
 
+  * `ApTeX`
   * `HeVeA`
   * `JBibTeX`
   * `JLaTeX`
@@ -168,6 +169,10 @@ You can bulk-import the secondary logos with `\bxtexlogoimport{**}`.
 
 Revision History
 ----------------
+
+  * Version 0.4 ‹2018/03/11›
+      - More logos: ApTeX, DVIPDFMx.
+      - Add `\bxtexlogoItalicOrSlant`.
 
   * Version 0.3 ‹2017/11/11›
       - More logos.
