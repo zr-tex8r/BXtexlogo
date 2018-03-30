@@ -160,7 +160,8 @@
   \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.15}\hologo{BibTeX}}
 \bxtexlogoDeclare{primary}{pBibTeX}[]{p\hologo{BibTeX}}
 \bxtexlogoDeclare{primary}{upBibTeX}[]{up\hologo{BibTeX}}
-\bxtexlogoDeclare{primary}{TikZ}{Ti\textit{k}Z\bxlg@nonuc}
+\bxtexlogoDeclare{primary}{TikZ}{%
+  Ti\bxtexlogoItalicOrSlant{k}Z\bxlg@nonuc}
 
 %% old or not-so-famous
 \bxtexlogoDeclare{secondary}{JTeX}{%
@@ -462,6 +463,7 @@
 
 %% variables
 \let\bxlg@slant@val\relax
+\newdimen\bxlg@g@height
 
 %%<+> \bxtexlogoFontSlant
 % Uses the slant value of the current font.
@@ -482,6 +484,7 @@
   \aftergroup\bxlg@slant@c}
 \def\bxlg@slant@c{%
     \leavevmode
+    \global\bxlg@g@height\ht\z@
     \ifdim\bxlg@slant@val\p@=\z@ \box\z@
     \else
       \@tempdima\wd\z@ \wd\z@\z@
@@ -503,18 +506,23 @@
 \def\bxlg@implement@slant{%
   \begingroup
   \chardef\bxlg@tmpb=0
-  \def\bxlg@tmpa{\special{ps: currentpoint grestore moveto}}
+  \def\bxlg@tmpa{\special{ps: currentpoint grestore moveto}}%
   \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=1 \fi
-  \def\bxlg@tmpa{\special{pdf:etrans}}
+  \def\bxlg@tmpa{\special{pdf:etrans}}%
   \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=2 \fi
-  \def\bxlg@tmpa{\pdfrestore}
+  \def\bxlg@tmpa{\pdfrestore}%
   \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=3 \fi
-  \def\bxlg@tmpa{\pdfextension restore\relax}
+  \def\bxlg@tmpa{\pdfextension restore\relax}%
   \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=4 \fi
+  \def\bxlg@tmpa{dvipdfmx.def}%
+  \ifx\bxlg@tmpa\Gin@driver \chardef\bxlg@tmpb=2 \fi
+  \def\bxlg@tmpa{xetex.def}%
+  \ifx\bxlg@tmpa\Gin@driver \chardef\bxlg@tmpb=2 \fi
   \bxDebug{[gdriver=\the\bxlg@tmpb]}%
   \ifcase\bxlg@tmpb
     % unknown, then leave unimplmented
   \or % dvips
+    % TODO: implement
   \or % dvipdfmx
     \gdef\bxlg@slant@start{\special{%
       pdf:btrans matrix 1 0 \bxlg@slant@val\space 1 0 0}}
@@ -532,6 +540,22 @@
   \global\let\bxlg@implement@slant\relax
   \endgroup}
 \AtBeginDocument{\bxlg@implement@slant}
+
+%% \bxlg@fallback@slant
+\def\bxlg@fallback@slant{0.167}
+
+%%<+> \bxtexlogoItalicOrSlant
+% Uses the slant value of the current font.
+\newcommand*\bxtexlogoItalicOrSlant[1]{%
+  \textit{%
+    \@tempdima\fontdimen\@ne\font
+    \ifdim\@tempdima>\z@
+      #1%
+    \else
+      \bxtexlogoSlant\bxlg@fallback@slant{#1}%
+      \@tempdima\bxlg@fallback@slant\bxlg@g@height
+      \kern.75\@tempdima
+    \fi}}
 
 %--------------------------------------- small-caps
 
