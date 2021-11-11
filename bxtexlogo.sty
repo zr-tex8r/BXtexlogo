@@ -342,16 +342,24 @@
   \if b\expandafter\@car\f@series.\@nil \bxlg@oktrue
   \else \bxlg@okfalse \fi}
 
-%% \bxlg@declare@family{<enc>}{<family>}
-\def\bxlg@declare@family#1#2{%
+%% \bxlg@declare@family@mw{<enc>}{<family>}
+\def\bxlg@declare@family@mw#1#2{%
   \DeclareFontFamily{#1}{#2}{}%
   \DeclareFontShape{#1}{#2}{m}{it}{<->ssub*#2/m/n}{}%
   \DeclareFontShape{#1}{#2}{m}{sl}{<->ssub*#2/m/n}{}%
   \DeclareFontShape{#1}{#2}{m}{sc}{<->ssub*#2/m/n}{}%
-  \DeclareFontShape{#1}{#2}{bx}{n}{<->ssub*#2/m/n}{}%
-  \DeclareFontShape{#1}{#2}{bx}{it}{<->ssub*#2/m/n}{}%
-  \DeclareFontShape{#1}{#2}{bx}{sl}{<->ssub*#2/m/n}{}%
-  \DeclareFontShape{#1}{#2}{bx}{sc}{<->ssub*#2/m/n}{}}
+  \DeclareFontShape{#1}{#2}{b}{it}{<->ssub*#2/b/n}{}%
+  \DeclareFontShape{#1}{#2}{b}{sl}{<->ssub*#2/b/n}{}%
+  \DeclareFontShape{#1}{#2}{b}{sc}{<->ssub*#2/b/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{n}{<->ssub*#2/b/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{it}{<->ssub*#2/bx/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{sl}{<->ssub*#2/bx/n}{}%
+  \DeclareFontShape{#1}{#2}{bx}{sc}{<->ssub*#2/bx/n}{}}
+
+%% \bxlg@declare@family{<enc>}{<family>}
+\def\bxlg@declare@family#1#2{%
+  \bxlg@declare@family@mw{#1}{#2}%
+  \DeclareFontShape{#1}{#2}{b}{n}{<->ssub*#2/m/n}{}}%
 
 %% \bxlg@warn@font{<str>}
 \def\bxlg@warn@font#1{%
@@ -394,8 +402,31 @@
 }{%else fallback using ordinary bold
   \bxlg@next{s*[1.44]cmnx10}%
 }}}
-\def\bxlg@One{\bxtexlogoFontSlant{%
+\def\bxlg@One@normal{\bxtexlogoFontSlant{%
   \usefont{U}{bxlgone}{m}{n}1}}
+\let\bxlg@One\bxlg@One@normal
+% bboldx version
+\IfFileExists{bboldx.sty}{%
+  \bxlg@declare@family@mw{U}{bxlgoneBBX}%
+  \DeclareFontShape{U}{bxlgoneBBX}{m}{n}{<->s*[1.44]BBOLDX-Thin}{}%
+  \DeclareFontShape{U}{bxlgoneBBX}{b}{n}{<->s*[1.44]BBOLDX-Regular}{}%
+  \def\bxlg@One@BBX{\bxtexlogoFontSlant{%
+    \usefont{U}{bxlgoneBBX}{\f@series}{n}1}}%
+}
+
+%%<+>\bxtexlogoUseBboldx
+%%<+>\bxtexlogoNoUseBboldx
+\DeclareRobustCommand*\bxtexlogoUseBboldx{%
+  \let\bxlg@One\bxlg@One@BBX}
+\DeclareRobustCommand*\bxtexlogoNoUseBboldx{%
+  \let\bxlg@One\bxlg@One@normal}
+\ifx\bxlg@One@BBX\@undefined
+  \@namedef{bxtexlogoUseBboldx }{%
+    \PackageError\bxlg@pkgname
+     {Package 'bboldx' is not available}
+     {\@eha}
+    \@namedef{bxtexlogoUseBboldx }{}}
+\fi
 
 %% \bxlg@select@OTi
 \def\bxlg@select@OTi{%
