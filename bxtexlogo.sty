@@ -207,6 +207,10 @@
 \bxtexlogoDeclare{secondary}{ApTeX}{A\kern-.08em \bxlg@logo@@pTeX}
 \bxtexlogoDeclare{secondary}{DVIPDFMx}{% obsolete logo
   DVI\-PDFM\bxtexlogoItalicOrSlant{x}}
+\bxtexlogoDeclare{secondary}{OpTeX}{Op\kern-.05em \TeX}
+\bxtexlogoDeclare{secondary}{CSTUG}{\leavevmode
+  \bxlg@cal{C}\kern-.3em \lower.67ex\hbox{\bxlg@cal{S}}%
+  \kern-.145em TUG}
 
 %% fancy things (Not!)
 \bxtexlogoDeclare{secondary}{BaSiX}{%
@@ -369,6 +373,13 @@
   \begingroup
     \bxlg@check@bold \ifbxlg@ok \boldmath \fi
     $\m@th \varepsilon$%
+  \endgroup}
+
+%% \bxlg@cal
+\def\bxlg@cal#1{%
+  \begingroup
+    \bxlg@check@bold \ifbxlg@ok \boldmath \fi
+    $\m@th \mathcal{#1}$%
   \endgroup}
 
 %% \bxlg@One
