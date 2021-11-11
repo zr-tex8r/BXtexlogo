@@ -135,6 +135,7 @@ You can bulk-import the secondary logos with `\bxtexlogoimport{**}`.
 (Logos provided by this package)
 
   * `ApTeX`
+  * `CSTUG`
   * `HeVeA`
   * `JBibTeX`
   * `JLaTeX`
@@ -148,6 +149,7 @@ You can bulk-import the secondary logos with `\bxtexlogoimport{**}`.
   * `logoLambda` for “Λ”
   * `logoLamed` for “ל”
   * `logoOmega` for “Ω”
+  * `OpTeX`
   * `pTeXsT`
   * `XyM` for prefix
   * `XyMTeX`
@@ -170,6 +172,10 @@ You can bulk-import the secondary logos with `\bxtexlogoimport{**}`.
 Revision History
 ----------------
 
+  * Version 0.5 ‹2021/11/11›
+      - More logos: OpTeX, CSTUG.
+      - (experimental) Add `\bxtexlogoUseBboldx`.
+
   * Version 0.4 ‹2018/03/11›
       - More logos: ApTeX, DVIPDFMx.
       - Add `\bxtexlogoItalicOrSlant`.
@@ -185,4 +191,4 @@ Revision History
 
 --------------------
 Takayuki YATO (aka. "ZR")  
-http://zrbabbler.sp.land.to/
+https://github.com/zr-tex8r
