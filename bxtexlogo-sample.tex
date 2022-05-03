@@ -2,8 +2,8 @@
 \usepackage[scale=0.75]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\newcommand{\PkgVersion}{0.5}
-\newcommand{\PkgDate}{2021/11/11}
+\newcommand{\PkgVersion}{0.6}
+\newcommand{\PkgDate}{2022/05/05}
 \newcommand{\Pkg}[1]{\textsf{#1}}
 \usepackage{graphicx,bxtexlogo}
 \bxtexlogoimport{*,**}
@@ -21,6 +21,10 @@
 \newcommand*{\LSEntry}[1]{%
   \texttt{\string#1} & \textrm{#1} & \textit{#1}
       & \textsf{#1} & \textsf{\textsl{#1}}
+  \\}
+\newcommand*{\LSXEntry}[1]{%
+  \texttt{#1} & \textrm{\bxtexlogo{#1}} & \textit{\bxtexlogo{#1}}
+      & \textsf{\bxtexlogo{#1}} & \textsf{\textsl{\bxtexlogo{#1}}}
   \\}
 %-----------------------------------------------------------
 \begin{document}
@@ -102,6 +106,7 @@ You can use these commands after invoking
 \LSEntry{\CSTUG}
 \LSEntry{\DVIPDFMx}
 \LSEntry{\HeVeA}
+\LSEntry{\HiTeX}
 \LSEntry{\JBibTeX}
 \LSEntry{\JLaTeX}
 \LSEntry{\JTeX}
@@ -116,6 +121,7 @@ You can use these commands after invoking
 \LSEntry{\logoOmega}
 \LSEntry{\OpTeX}
 \LSEntry{\pTeXsT}
+\LSEntry{\TeXXeT}
 \LSEntry{\XyM}
 \LSEntry{\XyMTeX}
 \LSEntry{\BaSiX}
@@ -123,8 +129,41 @@ You can use these commands after invoking
 \LSEntry{\SuyahTeX}
 \LSEntry{\SATySFi}
 \LSEntry{\TeXonLaTeX}
-% software yet unavailable
-%\LSEntry{\YukidarumaTeX}
+\end{LogoSamples}
+
+\newpage
+%============================================================
+\section{Extra Logos}
+
+You can typeset these logos by
+\verb|\bxtexlogo{|$\langle$\emph{name}$\rangle$\verb|}|.
+Instead, if the name consists only of alphabets,
+you can import logos as new commands
+(\verb|\|$\langle$\emph{name}$\rangle$)
+by invoking
+\verb|\bxtexlogoimport{|$\langle$\emph{name}$\rangle$\verb|}|.
+
+\paragraph{Logos provided by \Pkg{hologo}}
+The list is partial.
+In fact, all logos provided by \Pkg{hologo} can be used
+in the way mentioned above.
+
+\begin{LogoSamples}
+\LSXEntry{(La)TeX}
+\LSXEntry{ExTeX}
+\LSXEntry{La}
+\LSXEntry{Xe}
+\end{LogoSamples}
+
+\paragraph{Logos provided by \Pkg{bxtexlogo}}\mbox{}
+
+\begin{LogoSamples}
+\LSXEntry{1TeX}
+\LSXEntry{arara}
+\LSXEntry{e}
+\LSXEntry{LuahbTeX}
+\LSXEntry{XeT}
+\LSXEntry{YukidarumaTeX}
 \end{LogoSamples}
 
 \end{document}
