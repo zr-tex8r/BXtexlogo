@@ -31,8 +31,13 @@
 \def\bxlg@hologo@import@secondary{%
   HanTheThanh,KOMAScript,LaTeXTeX,NTS,PiCTeX,SageTeX,%
   SLiTeX,teTeX,TTH}
+\def\bxlg@hologo@import@nolevel{%
+  (La)TeX,biber,BibTeX8,emTeX,ExTeX,iniTeX,La,LaTeX2e,%
+  LaTeX3,MetaFun,MetaPost,MiKTeX,OzMF,OzMP,OzTeX,OzTtH,
+  PCTeX,PiC,plainTeX,SliTeX,teTeX,TeX4ht,virTeX,VTeX,Xe}
 \@onlypreamble\bxlg@hologo@import@primary
 \@onlypreamble\bxlg@hologo@import@secondary
+\@onlypreamble\bxlg@hologo@import@nolevel
 
 %% constants
 \def\bxlg@@star{*}
@@ -86,6 +91,7 @@
 %% constants
 \chardef\bxlg@level@@primary=1
 \chardef\bxlg@level@@secondary=2
+\chardef\bxlg@level@@=0 % no-level (not for bulk import)
 
 %% variables
 \let\bxlg@list\@empty
@@ -110,7 +116,8 @@
     \def\bxlg@next{\endgroup}%
   \else
     \g@addto@macro\bxlg@list{\do{#3}}%
-    \global\expandafter\let\csname bxlg@flag@@#3\endcsname#1%
+    \ifnum#1>\z@
+      \global\expandafter\let\csname bxlg@flag@@#3\endcsname#1\fi
     \def\bxlg@next{\bxlg@declare@c{#3}{#4}}%
   \fi
   \afterassignment\bxlg@next \toks@}% read {<LaTeX>}
@@ -141,6 +148,9 @@
   }\bxlg@next}
 \@for\bxlg@tmpb:=\bxlg@hologo@import@secondary\do{%
   \edef\bxlg@next{\noexpand\bxlg@tmpa{secondary}{\bxlg@tmpb}%
+  }\bxlg@next}
+\@for\bxlg@tmpb:=\bxlg@hologo@import@nolevel\do{%
+  \edef\bxlg@next{\noexpand\bxlg@tmpa{}{\bxlg@tmpb}%
   }\bxlg@next}
 
 %--------------------------------------- registry
@@ -224,7 +234,7 @@
 \bxtexlogoDeclare{secondary}{SuyahTeX}{\bxlg@Suyah\TeX}
 
 %% the unnamable (Eh?)
-\bxtexlogoDeclare{secondary}{YukidarumaTeX}{\bxlg@Yukidaruma\TeX}
+\bxtexlogoDeclare{}{YukidarumaTeX}{\bxlg@Yukidaruma\TeX}
 \bxtexlogoDeclare{secondary}{SATySFi}{%
   S\kern-0.1em A\kern-0.18em T\kern-0.22em
   \lower0.2em\hbox{Y}\kern-0.08em
