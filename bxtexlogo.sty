@@ -57,6 +57,9 @@
 \def\bxlg@err@ukval#1{\PackageError\bxlg@pkgname
  {Unknown value '#1'}%
  {\@eha}}
+\def\bxlg@err@uknam#1{\PackageError\bxlg@pkgname
+ {Unknown logo name '#1'}%
+ {\@ehc}}
 
 %% \bxlg@cond\ifXXX..\fi{<T>}{<F>}
 \@gobbletwo\if\if \def\bxlg@cond#1\fi{%
@@ -267,8 +270,7 @@
       \else\ifx\bxlg@name\bxlg@@dblstar
         \bxlg@import@all\bxlg@level@@secondary
       \else\expandafter\ifx\csname bxlg@logo@@\bxlg@name\endcsname\relax
-        \PackageError\bxlg@pkgname
-         {Unknown logo name '\bxlg@name'}\@ehc
+        \bxlg@err@uknam\bxlg@name
       \else
         \bxlg@import@one\bxlg@name
       \fi\fi\fi
@@ -333,6 +335,14 @@
 \def\bxlg@default@import{%
   \bxtexlogoimport{*}}
 \AtBeginDocument{\bxlg@default@import}
+
+%--------------------------------------- user interface
+
+%%<*> \bxtexlogo{<name>}
+\newcommand*\bxtexlogo[1]{%
+  \expandafter\bxlg@use@a\csname bxlg@lcmd@@#1\endcsname{#1}}
+\def\bxlg@use@a#1#2{%
+  \bxlg@cond\ifx#1\relax\fi{\bxlg@err@uknam{#2}}{#1}}
 
 %--------------------------------------- font
 
