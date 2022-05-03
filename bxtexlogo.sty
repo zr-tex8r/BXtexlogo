@@ -224,6 +224,9 @@
 \bxtexlogoDeclare{secondary}{CSTUG}{\leavevmode
   \bxlg@cal{C}\kern-.3em \lower.67ex\hbox{\bxlg@cal{S}}%
   \kern-.145em TUG}
+\bxtexlogoDeclare{secondary}{HiTeX}[]{Hi\TeX}
+\bxtexlogoDeclare{secondary}{TeXXeT}[TeX--XeT]{%
+  \TeX-\textbf{-}\bxlg@logo@@XeT}
 
 %% fancy things (Not!)
 \bxtexlogoDeclare{secondary}{BaSiX}{%
@@ -236,8 +239,17 @@
   \bxlg@One\kern-0.2em \TeX}
 \bxtexlogoDeclare{secondary}{SuyahTeX}{\bxlg@Suyah\TeX}
 
-%% the unnamable (Eh?)
+%% logos of "no-level"
+\bxtexlogoDeclare{}{XeT}{%
+  \textbf{\bxtexlogoReflect{\TeX}{XeT}}\bxlg@nonuc}
+\bxtexlogoDeclare{}{e}{\bxlg@epsilon}
+\bxtexlogoDeclare{}{1TeX}{\bxlg@logo@@OneTeX}%alias
+\bxtexlogoDeclare{}{LuahbTeX}[LuaHBTeX]{% experimental
+  Lua\bxtexlogoSmcp{hb}\kern-.05em \TeX}
+\bxtexlogoDeclare{}{arara}{\bxlg@arara}
 \bxtexlogoDeclare{}{YukidarumaTeX}{\bxlg@Yukidaruma\TeX}
+
+%% other than TeX
 \bxtexlogoDeclare{secondary}{SATySFi}{%
   S\kern-0.1em A\kern-0.18em T\kern-0.22em
   \lower0.2em\hbox{Y}\kern-0.08em
@@ -500,6 +512,28 @@
   \bxlg@required@font{logoLamed}{babel-hebrew}%
   \def\bxlg@Lamed{\bxlg@warn@font{logoLamed}\textsf{Lamed}}%
 }
+
+%% \bxlg@arara
+\IfFileExists{comfortaa.sty}{%
+  \bxlg@declare@family{U}{bxlgcomf}%
+  \DeclareFontShape{U}{bxlgcomf}{m}{n}{<->Comfortaa-Bold-T1}{}%
+  \def\bxlg@arara{%
+    \bxlg@matchlc{0.21}{\usefont{U}{bxlgcomf}{m}{n}arara}}%
+}{%else
+  \bxlg@required@font{arara}{bxlgcomf}%
+  \def\bxlg@arara{\bxlg@warn@font{arara}\textsf{arara}}%
+}
+
+%% \bxlg@matchlc{<coeff>}{<text>}
+% NB. Here coeff is (1pt / 1ex).
+\def\bxlg@matchlc#1#2{%
+  \ifx\scalebox\@undefined \mbox{#2}%
+  \else
+    \begingroup
+      \@tempdima#1ex \xdef\bxlg@@g@tmpa{\strip@pt\@tempdima}%
+    \endgroup
+    \scalebox{\bxlg@@g@tmpa}{#2}%
+  \fi}
 
 %% \bxlg@akern
 \def\bxlg@akern#1{%
