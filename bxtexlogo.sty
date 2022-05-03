@@ -622,6 +622,21 @@
       \kern.75\@tempdima
     \fi}}
 
+%--------------------------------------- reflect
+
+%%<+> \bxtexlogoReflect{<text>}{<fallback>}
+\@ifdefinable\bxtexlogoReflect{%
+\DeclareRobustCommand*\bxtexlogoReflect{%
+  \bxlg@cond\ifx\reflectbox\@undefined\fi
+    {\bxlg@reflect@b}{\bxlg@reflect@a}}
+\def\bxlg@reflect@a#1#2{\reflectbox{#1}}
+\def\bxlg@reflect@b{%
+  \PackageWarning\bxlg@pkgname
+   {Package 'graphics' is not loaded,\MessageBreak reported}%
+  \global\let\bxlg@reflect@b\@secondoftwo
+  \@secondoftwo}
+}
+
 %--------------------------------------- small-caps
 
 %% constants
