@@ -351,10 +351,12 @@
 %--------------------------------------- user interface
 
 %%<*> \bxtexlogo{<name>}
-\newcommand*\bxtexlogo[1]{%
+\@ifdefinable\bxtexlogo{%
+\DeclareRobustCommand*\bxtexlogo[1]{%
   \expandafter\bxlg@use@a\csname bxlg@lcmd@@#1\endcsname{#1}}
 \def\bxlg@use@a#1#2{%
   \bxlg@cond\ifx#1\relax\fi{\bxlg@err@uknam{#2}}{#1}}
+}
 
 %--------------------------------------- font
 
@@ -404,7 +406,7 @@
   \fi}
 
 %% \bxlg@required@font{<str>}{<pkg-name>}
-\@onlypreamble\bxlg@required@fon
+\@onlypreamble\bxlg@required@font
 \def\bxlg@required@font#1#2{%
   \@namedef{bxlg@fpkg@@#1}{#2}}
 
@@ -509,7 +511,7 @@
 }{%else
   \bxlg@required@font{logoAleph}{cjhebrew}%
   \def\bxlg@Aleph{\bxlg@warn@font{logoAleph}\textsf{Aleph}}%
-  \bxlg@required@font{logoLamed}{babel-hebrew}%
+  \bxlg@required@font{logoLamed}{cjhebrew}%
   \def\bxlg@Lamed{\bxlg@warn@font{logoLamed}\textsf{Lamed}}%
 }
 
@@ -645,7 +647,8 @@
 
 %%<+> \bxtexlogoItalicOrSlant
 % Uses the slant value of the current font.
-\newcommand*\bxtexlogoItalicOrSlant[1]{%
+\@ifdefinable\bxtexlogoItalicOrSlant{%
+\DeclareRobustCommand*\bxtexlogoItalicOrSlant[1]{%
   \textit{%
     \@tempdima\fontdimen\@ne\font
     \ifdim\@tempdima>\z@
@@ -655,6 +658,7 @@
       \@tempdima\bxlg@fallback@slant\bxlg@g@height
       \kern.75\@tempdima
     \fi}}
+}
 
 %--------------------------------------- reflect
 
@@ -663,7 +667,7 @@
 \DeclareRobustCommand*\bxtexlogoReflect{%
   \bxlg@cond\ifx\reflectbox\@undefined\fi
     {\bxlg@reflect@b}{\bxlg@reflect@a}}
-\def\bxlg@reflect@a#1#2{\reflectbox{#1}}
+\def\bxlg@reflect@a#1#2{\reflectbox{\upshape#1}}
 \def\bxlg@reflect@b{%
   \PackageWarning\bxlg@pkgname
    {Package 'graphics' is not loaded,\MessageBreak reported}%
@@ -769,7 +773,7 @@
 
 %% initial setup
 \bxtexlogoSmcpAs{auto}
-\bxtexlogoSmcpAsFakeFor{*/cmss/*}
+\bxtexlogoSmcpAsFakeFor{*/cmss/*,*/lmss/*}
 
 %--------------------------------------- done
 \endinput
