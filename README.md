@@ -56,12 +56,12 @@ All the options are passed to hologo.
       - `<prefix>+<name>`: Defines forcefully with a prefix; for example,
         `my+BibTeX` overwrites the command `\myBibTeX`.
 
-    The `<name` part can be either `*` or `**` instead of a valid logo
+    The `<name>` part can be either `*` or `**` instead of a valid logo
     name. There `*` means “all the primary logo names” and `**` means
     “all the secondary logo names”.  (The logo classification will be
     described later.) For example, `{*,my+**}` imports all the primary
     logos (without prefix, non-forcefully) and then imports forcefully all
-    the secondary logos with a prefix.
+    the secondary logos with prefix `my`.
 
     Note that the logo names explicitly given earlier are excluded from
     the bulk import by `*` and `**`. For example, `{BibTeX,my-*}` defines
@@ -71,6 +71,9 @@ All the options are passed to hologo.
     that the logo names explicitly given are not excluded from the target
     of bulk imports in the future. This command is intended to be used in
     packages and classes.
+
+  * `\bxtexlogo{<name>}: Outputs the logo of name `<name>`. This form can
+    be always used, whether the logo is imported or not.
 
 ### Avaiable logo names
 
@@ -156,14 +159,32 @@ You can bulk-import the secondary logos with `\bxtexlogoimport{**}`.
   * … and more exotic ones, such as `BaSiX`  
     (See the sample document for detail.)
 
+#### Addtional logos
+
+Starting from v0.6, *all* hologo logos (not only ones classified as
+“primary” or “secondary”) can be imported through `\bxtexlogoimport`
+command, as long as its name contains only letters. For example, the logo
+`Xe` (the head part of the `XeTeX` logo) that is provided by hologo can
+be imported by invoking `\bxtexlogoimport{Xe}`, and then you can output
+this logo by typing `\Xe`. (You can also do `\bxtexlogoimport{my-Xe}`
+instead, of course.) Note that these “non-classified” logos are never
+included in the target of bulk import.
+
+Note. The command `\bxtexlogo` also supports all hologo logos and thus
+can be used in place of `\hologo`, just if you like it.
+
+Moreover, the bxtexlogo itself provides a few “non-classified” logos,
+such as `e` (the head part of `eTeX` logo). This logo can be used by
+importing (perhaps with a prefix) or by writing `\bxtexlogo{e}`. See the
+sample document for detail.
+
 ### Notices
 
   * You are recommended to load the graphicx package; its functionality
     will be utilized to improve the output of logos.
   * You cannot use the logo commands in math mode.
-  * You can use the logos provided by this package can be used in PDF
-    strings, but not in TeX4ht workflow (contrary to the logos provided by
-    hologo).
+  * You can use the logos provided by this package in PDF strings, but
+    not in TeX4ht workflow (contrary to the logos provided by hologo).
   * The functionality of the hologo package is not altered in any way.
   * You cannot apply the management commands of hologo (`\hologoSetup`
     etc.) to the logos provided by this package.
@@ -171,6 +192,11 @@ You can bulk-import the secondary logos with `\bxtexlogoimport{**}`.
 
 Revision History
 ----------------
+
+  * Version 0.6 ‹2022/05/05›
+      - More logos: HiTeX, TeX--XeT.
+      - Add `\bxtexlogo`.
+      - Add `\bxtexlogoReflect`.
 
   * Version 0.5 ‹2021/11/11›
       - More logos: OpTeX, CSTUG.
