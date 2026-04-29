@@ -236,13 +236,20 @@
 \bxtexlogoDeclare{secondary}{SuyahTeX}{\bxlg@Suyah\TeX}
 
 %% logos of "no-level"
+\bxtexlogoDeclare{}{LuaMetaTeX}{%
+  LuaMeta\kern-.083333em \TeX}
+\bxtexlogoDeclare{}{HiLaTeX}[]{Hi\LaTeX}
 \bxtexlogoDeclare{}{XeT}{%
   \textbf{\bxtexlogoReflect{\TeX}{XeT}}\bxlg@nonuc}
 \bxtexlogoDeclare{}{e}{\bxlg@epsilon}
+\bxtexlogoDeclare{}{lowe}{\bxlg@in@math{_{\textstyle\varepsilon}}}
 \bxtexlogoDeclare{}{1TeX}{\bxlg@logo@@OneTeX}%alias
 \bxtexlogoDeclare{}{LuahbTeX}[LuaHBTeX]{% experimental
   Lua\bxtexlogoSmcp{hb}\kern-.05em \TeX}
 \bxtexlogoDeclare{}{arara}{\bxlg@arara}
+\bxtexlogoDeclare{}{One}{\bxlg@One}
+\bxtexlogoDeclare{}{Suyah}{\bxlg@Suyah}
+\bxtexlogoDeclare{}{Yukidaruma}{\bxlg@Yukidaruma}
 \bxtexlogoDeclare{}{YukidarumaTeX}{\bxlg@Yukidaruma\TeX}
 
 %% other than TeX
@@ -567,6 +574,14 @@
 %% \bxlg@nonuc
 \def\bxlg@nonuc{%
   \spacefactor\@m}
+
+%% \bxlg@in@math{<text>}
+\def\bxlg@in@math#1{%
+  \begingroup
+    \m@th
+    \if b\expandafter\@car\f@series?\@nil \boldmath \fi
+    $#1\relax$%
+  \endgroup}
 
 %--------------------------------------- slant
 
