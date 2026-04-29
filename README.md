@@ -193,6 +193,10 @@ sample document for detail.
 Revision History
 ----------------
 
+  * Version 0.7 ‹2026/04/29›
+      - More logos: HiLaTeX, LuaMetaTeX, lowe.
+      - Bug fix.
+
   * Version 0.6 ‹2022/05/05›
       - More logos: HiTeX, TeX--XeT.
       - Add `\bxtexlogo`.
