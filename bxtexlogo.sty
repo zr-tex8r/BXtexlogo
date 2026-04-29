@@ -16,6 +16,9 @@
 \def\bxlg@pkgname{bxtexlogo}
 \providecommand\bxDebug[1]{}
 
+% NOTE. The sets of primary and secondary logos
+% are frozen until v1.0.
+
 %--------------------------------------- general
 
 %% packages
@@ -136,14 +139,7 @@
     \xdef#2{\the\toks@}%
   \endgroup}
 
-%%<+> \bxtexlogoTest
-% The test output.
-\newcommand*\bxtexlogoTest{%
-  \par \let\do\bxlg@logo@test@do \bxlg@list}
-\def\bxlg@logo@test@do#1{%
-  \texttt{#1}:\quad\@nameuse{bxlg@logo@@#1}\par}
-
-%% import form hologo
+%% import from hologo
 \def\bxlg@tmpa#1#2{%
   \bxtexlogoDeclare{#1}{#2}[]{\hologo{#2}}}
 \@for\bxlg@tmpb:=\bxlg@hologo@import@primary\do{%
@@ -358,6 +354,15 @@
   \bxlg@cond\ifx#1\relax\fi{\bxlg@err@uknam{#2}}{#1}}
 }
 
+%%<+> \bxtexlogoTest
+% The test output.
+\@ifdefinable\bxtexlogoTest{%
+\DeclareRobustCommand*\bxtexlogoTest{%
+  \par \let\do\bxlg@logo@test@do \bxlg@list}
+\def\bxlg@logo@test@do#1{%
+  \texttt{#1}:\quad\@nameuse{bxlg@logo@@#1}\par}
+}
+
 %--------------------------------------- font
 
 %% variables
@@ -393,7 +398,7 @@
 %% \bxlg@declare@family{<enc>}{<family>}
 \def\bxlg@declare@family#1#2{%
   \bxlg@declare@family@mw{#1}{#2}%
-  \DeclareFontShape{#1}{#2}{b}{n}{<->ssub*#2/m/n}{}}%
+  \DeclareFontShape{#1}{#2}{b}{n}{<->ssub*#2/m/n}{}}
 
 %% \bxlg@warn@font{<str>}
 \def\bxlg@warn@font#1{%
@@ -569,14 +574,18 @@
 %%<+> \bxtexlogoFontSlant
 % Uses the slant value of the current font.
 %%<+> \bxtexlogoSlant{<real>}
-\newcommand*\bxtexlogoFontSlant{%
+\@ifdefinable\bxtexlogoFontSlant{%
+\DeclareRobustCommand*\bxtexlogoFontSlant{%
   \begingroup
     \@tempdima\fontdimen\@ne\font
     \bxlg@slant@a}
-\newcommand*\bxtexlogoSlant[1]{%
+}
+\@ifdefinable\bxtexlogoSlant{%
+\DeclareRobustCommand*\bxtexlogoSlant[1]{%
   \begingroup
     \@tempdima=#1\p@
     \bxlg@slant@a}
+}
 \def\bxlg@slant@a{%
   \bxlg@implement@slant
   \edef\bxlg@slant@val{\strip@pt\@tempdima}%
@@ -705,16 +714,20 @@
 
 %%<+> \bxtexlogoSmcpAs{<value>}
 % valus: auto, real, fake
-\newcommand*\bxtexlogoSmcpAs[1]{%
+\@ifdefinable\bxtexlogoSmcpAs{%
+\DeclareRobustCommand*\bxtexlogoSmcpAs[1]{%
   \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@smcp@@#1\endcsname
   \ifx\bxlg@tmpa\relax
     \bxlg@err@ukval{#1}%
   \else \let\bxlg@smcp@mode\bxlg@tmpa
   \fi}
+}
 
 %%<+> \bxtexlogoSmcpAsFakeFor
-\newcommand*\bxtexlogoSmcpAsFakeFor[1]{%
+\@ifdefinable\bxtexlogoSmcpAsFakeFor{%
+\DeclareRobustCommand*\bxtexlogoSmcpAsFakeFor[1]{%
   \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
+}
 
 %% \bxlg@check@smcp
 \def\bxlg@check@smcp{%
@@ -774,6 +787,8 @@
 %% initial setup
 \bxtexlogoSmcpAs{auto}
 \bxtexlogoSmcpAsFakeFor{*/cmss/*,*/lmss/*}
+
+%--------------------------------------- components
 
 %--------------------------------------- done
 \endinput
