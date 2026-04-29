@@ -400,6 +400,31 @@
   \bxlg@declare@family@mw{#1}{#2}%
   \DeclareFontShape{#1}{#2}{b}{n}{<->ssub*#2/m/n}{}}
 
+%% \bxlg@use@family{<enc>}{<family>}
+\def\bxlg@use@family#1#2{%
+  \fontencoding{#1}\fontfamily{#2}\selectfont}
+
+%% \bxlg@if@ipaex@ok
+\IfFileExists{c70ipxg.fd}{%
+  \let\bxlg@if@ipaex@ok\@firstoftwo
+}{\let\bxlg@if@ipaex@ok\@secondoftwo}
+
+%% \bxlg@declare@ipaex@family{<sub-id>}
+\@onlypreamble\bxlg@declare@ipaex@family
+\def\bxlg@declare@ipaex@family#1{%
+  \bxlg@if@ipaex@ok{%
+    \expandafter\ifx\csname U+bxlgjar#1\endcsname\relax
+      \bxlg@declare@family{U}{bxlgjas#1}%
+      \DeclareFontShape{U}{bxlgjas#1}{m}{n}{<->ipxg-r-u#1}{}%
+      \bxlg@declare@family@mw{U}{bxlgjar#1}%
+      \DeclareFontShape{U}{bxlgjar#1}{m}{n}{<->ipxm-r-u#1}{}%
+      \DeclareFontShape{U}{bxlgjar#1}{b}{n}{<->ssub*bxlgjas#1/m/n}{}%
+    \fi}{}}
+
+%% \bxlg@ipaex{<sub-id>}
+\def\bxlg@ipaex#1{%
+  \fontencoding{U}\fontfamily{bxlgjar#1}\selectfont}
+
 %% \bxlg@warn@font{<str>}
 \def\bxlg@warn@font#1{%
   \expandafter\ifx\csname bxlg@fpkg@@#1\endcsname\relax\else
@@ -481,28 +506,6 @@
 %% \bxlg@Grk{<slot>}
 \def\bxlg@Grk#1{%
   \bgroup \bxlg@select@OTi \char#1\relax \egroup}
-
-%% \bxlg@Suyah
-%% \bxlg@Yukidaruma
-\IfFileExists{c70ipxg.fd}{%
-  \bxlg@declare@family{U}{bxlgjasff}%
-  \DeclareFontShape{U}{bxlgjasff}{m}{n}{<->ipxg-r-uff}{}%
-  \def\bxlg@Suyah{\bxtexlogoFontSlant{%
-    \usefont{U}{bxlgjasff}{m}{n}%
-    \char125\bxlg@syt\char148\bxlg@syt\char103 }}%
-  \bxlg@declare@family{U}{bxlgjas26}%
-  \DeclareFontShape{U}{bxlgjas26}{m}{n}{<->s*ipxg-r-u26}{}%
-  \def\bxlg@Yukidaruma{\bxtexlogoFontSlant{%
-    \usefont{U}{bxlgjas26}{m}{n}\char3 }}%
-  \def\bxlg@syt{\kern-0.06em}%
-}{%else
-  \bxlg@required@font{SuyahTeX}{ipaex-type1}%
-  \def\bxlg@Suyah{\bxlg@warn@font{SuyahTeX}%
-    \textsf{Suyah}}%
-  \bxlg@required@font{YukidarumaTeX}{ipaex-type1}%
-  \def\bxlg@Yukidaruma{\bxlg@warn@font{YukidarumaTeX}%
-    \textsf{Yukidaruma}}%
-}
 
 %% \bxlg@Aleph
 %% \bxlg@Lamed
@@ -789,6 +792,26 @@
 \bxtexlogoSmcpAsFakeFor{*/cmss/*,*/lmss/*}
 
 %--------------------------------------- components
+
+%% \bxlg@Suyah
+%% \bxlg@Yukidaruma
+\bxlg@if@ipaex@ok{%
+  \bxlg@declare@ipaex@family{ff}%
+  \def\bxlg@syt{\kern-0.06em}%
+  \def\bxlg@Suyah{\bxtexlogoFontSlant{%
+    \bxlg@ipaex{ff}\bfseries%
+    \char125\bxlg@syt\char148\bxlg@syt\char103 }}%
+  \bxlg@declare@ipaex@family{26}%
+  \def\bxlg@Yukidaruma{\bxtexlogoFontSlant{%
+    \bxlg@ipaex{26}\char3 }}%
+}{%else
+  \bxlg@required@font{SuyahTeX}{ipaex-type1}%
+  \def\bxlg@Suyah{\bxlg@warn@font{SuyahTeX}%
+    \textsf{Suyah}}%
+  \bxlg@required@font{YukidarumaTeX}{ipaex-type1}%
+  \def\bxlg@Yukidaruma{\bxlg@warn@font{YukidarumaTeX}%
+    \textsf{Yukidaruma}}%
+}
 
 %--------------------------------------- done
 \endinput
