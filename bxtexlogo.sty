@@ -309,10 +309,12 @@
     \global\expandafter\let\csname bxlg@flag@@#1\endcsname\@undefined
   \fi
   \ifbxlg@ok
-    \global\expandafter\let\csname\bxlg@pfx#1\expandafter
+    \expandafter\bxlg@import@one@a\csname\bxlg@pfx#1\expandafter
         \endcsname\csname bxlg@lcmd@@#1\endcsname
-    \bxDebug{defined: \@backslashchar\bxlg@pfx#1}%
   \fi}
+\def\bxlg@import@one@a#1#2{%
+  \bxDebug{defined: \string#1}%
+  \global\let#1#2}
 
 %% \bxlg@import@all{<level>}
 \@onlypreamble\bxlg@import@all
