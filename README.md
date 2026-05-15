@@ -193,6 +193,9 @@ sample document for detail.
 Revision History
 ----------------
 
+  * Version 0.7a ‹2026/05/15›
+      - Bug fix.
+
   * Version 0.7 ‹2026/04/29›
       - More logos: HiLaTeX, LuaMetaTeX, lowe.
       - Bug fix.
