@@ -73,7 +73,7 @@
 \@gobble\if \long\def\bxlg@jump@exit#1\bxlg@exit{\fi}
 \let\bxlg@exit\relax
 
-%% \bxlg@logo@do{<text-form>}{<LaTeX-form>}
+%% \bxlg@logo@do{<LaTeX-form>}{<text-form>}
 % Uses \texorpdfstring if available.
 \def\bxlg@logo@do{%
   \bxlg@cond\ifx\texorpdfstring\@undefined\fi
@@ -106,6 +106,8 @@
 %\[bxlg@lcmd@@<name>]% core definition
 
 %%<+> \bxtexlogoDeclare{<level>}{<name>}[<text-form>]{<LaTeX-form>}
+% If [<text-form>] is omitted, it defaults to <name>.
+% If <text-form> is empty, <LaTeX-form> is always used.
 \@onlypreamble\bxtexlogoDeclare
 \newcommand*\bxtexlogoDeclare[2]{%{<level>}{<name>}
   \@ifnextchar[%
@@ -141,6 +143,7 @@
 
 %% import from hologo
 \def\bxlg@tmpa#1#2{%
+  % All hologo logos support PDF-strings.
   \bxtexlogoDeclare{#1}{#2}[]{\hologo{#2}}}
 \@for\bxlg@tmpb:=\bxlg@hologo@import@primary\do{%
   \edef\bxlg@next{\noexpand\bxlg@tmpa{primary}{\bxlg@tmpb}%
@@ -353,6 +356,9 @@
 
 %--------------------------------------- user interface
 
+% NOTE: LaTeX-protection is ignored in PDF-strings,
+% whereas engine-protection does not work well.
+
 %%<*> \bxtexlogo{<name>}
 \@ifdefinable\bxtexlogo{%
 \DeclareRobustCommand*\bxtexlogo[1]{%
@@ -446,20 +452,6 @@
 \@onlypreamble\bxlg@required@font
 \def\bxlg@required@font#1#2{%
   \@namedef{bxlg@fpkg@@#1}{#2}}
-
-%% \bxlg@epsilon
-\def\bxlg@epsilon{%
-  \begingroup
-    \bxlg@check@bold \ifbxlg@ok \boldmath \fi
-    $\m@th \varepsilon$%
-  \endgroup}
-
-%% \bxlg@cal
-\def\bxlg@cal#1{%
-  \begingroup
-    \bxlg@check@bold \ifbxlg@ok \boldmath \fi
-    $\m@th \mathcal{#1}$%
-  \endgroup}
 
 %% \bxlg@One
 \bxlg@declare@family{U}{bxlgone}
@@ -807,6 +799,14 @@
 \bxtexlogoSmcpAsFakeFor{*/cmss/*,*/lmss/*}
 
 %--------------------------------------- components
+
+%% \bxlg@epsilon
+\def\bxlg@epsilon{%
+  \bxlg@in@math{\varepsilon}}
+
+%% \bxlg@cal{<arg>}
+\def\bxlg@cal#1{%
+  \bxlg@in@math{\mathcal{#1}}}
 
 %% \bxlg@Suyah
 %% \bxlg@Yukidaruma
