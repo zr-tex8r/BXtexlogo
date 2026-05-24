@@ -73,6 +73,13 @@
   #1\expandafter\@firstoftwo
   \else \expandafter\@secondoftwo\fi}
 
+%% \bxlg@cslet{<csname-a>}\CSb
+\def\bxlg@cslet#1#2{%
+  \expandafter\let\csname#1\endcsname=#2}
+%% \bxlg@csletcs{<csname-a>}{<csname-b>}
+\def\bxlg@csletcs#1#2{%
+  \expandafter\let\csname#1\expandafter\endcsname\csname#2\endcsname}
+
 %% \bxlg@jump@exit...\bxlg@exit
 \@gobble\if \long\def\bxlg@jump@exit#1\bxlg@exit{\fi}
 \let\bxlg@exit\relax
@@ -93,13 +100,13 @@
 
 %% \bxlg@handle@key{<key>}{<value>}{<name>}
 \def\bxlg@handle@key#1#2#3{%
-  \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@#3\endcsname
+  \bxlg@csletcs{bxlg@tmpa}{bxlg@#3}%
   \ifx\bxlg@tmpa\relax \bxlg@err@ivkvl{#1}{#2}%
   \else \bxlg@tmpa
   \fi}
 %% \bxlg@handle@enum@key{<key>}{<value>}{<base-name>}
 \def\bxlg@handle@enum@key#1#2#3{%
-  \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@#3@@#2\endcsname
+  \bxlg@csletcs{bxlg@tmpa}{bxlg@#3@@#2}%
   \ifx\bxlg@tmpa\relax \bxlg@err@ivkvl{#1}{#2}%
   \else \bxlg@cslet{bxlg@#3}\bxlg@tmpa
   \fi}
@@ -109,6 +116,8 @@
 \def\bxlg@logo@do{%
   \bxlg@cond\ifx\texorpdfstring\@undefined\fi
       {\@firstoftwo}{\texorpdfstring}}
+
+%--------------------------------------- hologo fallback
 
 %% \bxlg@hologo{<name>}
 % Forwards to \hologo if it is available; otherwise does the original
@@ -160,7 +169,9 @@
 % If [<text-form>] is omitted, it defaults to <name>.
 % If <text-form> is empty, <LaTeX-form> is always used.
 \@onlypreamble\bxtexlogoDeclare
-\newcommand*\bxtexlogoDeclare[2]{%{<level>}{<name>}
+\newcommand*\bxtexlogoDeclare{\bxlg@declare}
+\@onlypreamble\bxlg@declare
+\def\bxlg@declare#1#2{%{<level>}{<name>}
   \@ifnextchar[%
    {\bxlg@declare@a{#1}{#2}}%
    {\bxlg@declare@a{#1}{#2}[#2]}}
@@ -176,7 +187,7 @@
   \else
     \g@addto@macro\bxlg@list{\do{#3}}%
     \ifnum#1>\z@
-      \global\expandafter\let\csname bxlg@flag@@#3\endcsname#1\fi
+      \global\bxlg@cslet{bxlg@flag@@#3}#1\fi
     \def\bxlg@next{\bxlg@declare@c{#3}{#4}}%
   \fi
   \afterassignment\bxlg@next \toks@}% read {<LaTeX>}
@@ -194,9 +205,9 @@
 
 %% import from hologo
 \def\bxlg@tmpa#1#2{%
-  \expandafter\let\csname bxlg@holf@@#2\endcsname=t%
+  \expandafter\bxlg@cslet{bxlg@holf@@#2}{t}%
   % All hologo logos support PDF-strings.
-  \bxtexlogoDeclare{#1}{#2}[]{\bxlg@hologo{#2}}}
+  \bxlg@declare{#1}{#2}[]{\bxlg@hologo{#2}}}
 \@for\bxlg@tmpb:=\bxlg@hologo@import@primary\do{%
   \edef\bxlg@next{\noexpand\bxlg@tmpa{primary}{\bxlg@tmpb}%
   }\bxlg@next}
@@ -358,7 +369,7 @@
   \else \bxlg@okfalse
   \fi\fi
   \ifbxlg@onego
-    \global\expandafter\let\csname bxlg@flag@@#1\endcsname\@undefined
+    \global\bxlg@cslet{bxlg@flag@@#1}\@undefined
   \fi
   \ifbxlg@ok
     \expandafter\bxlg@import@one@a\csname\bxlg@pfx#1\expandafter
@@ -495,19 +506,24 @@
 \def\bxlg@ipaex#1{%
   \fontencoding{U}\fontfamily{bxlgjar#1}\selectfont}
 
-%% \bxlg@warn@font{<str>}
-\def\bxlg@warn@font#1{%
+%% \bxlg@warn@logo{<str>}
+\def\bxlg@warn@logo#1{%
+  \bxlg@warn@package{#1}{Logo '#1' cannot be properly rendered}}
+%% \bxlg@warn@setting{<str>}
+\def\bxlg@warn@setting#1{%
+  \bxlg@warn@package{#1}{Setting '#1' cannot be applied}}
+\def\bxlg@warn@package#1#2{%
   \expandafter\ifx\csname bxlg@fpkg@@#1\endcsname\relax\else
     \PackageWarning\bxlg@pkgname
-     {Logo '#1' cannot be properly rendered\MessageBreak
-      because the font package '\csname bxlg@fpkg@@#1\endcsname'%
-      \MessageBreak is missing,}%
-    \global\expandafter\let\csname bxlg@fpkg@@#1\endcsname\relax
+     {#2\MessageBreak
+      because the package '\csname bxlg@fpkg@@#1\endcsname'%
+      \MessageBreak is unavailable,}%
+    \global\bxlg@cslet{bxlg@fpkg@@#1}\relax
   \fi}
 
-%% \bxlg@required@font{<str>}{<pkg-name>}
-\@onlypreamble\bxlg@required@font
-\def\bxlg@required@font#1#2{%
+%% \bxlg@required@package{<str>}{<pkg-name>}
+\@onlypreamble\bxlg@required@package
+\def\bxlg@required@package#1#2{%
   \@namedef{bxlg@fpkg@@#1}{#2}}
 
 %% \bxlg@One
@@ -575,10 +591,10 @@
   \def\bxlg@Lamed{%
     \bgroup \usefont{U}{bxlghbr}{m}{n}\char108\egroup}%
 }{%else
-  \bxlg@required@font{logoAleph}{cjhebrew}%
-  \def\bxlg@Aleph{\bxlg@warn@font{logoAleph}\textsf{Aleph}}%
-  \bxlg@required@font{logoLamed}{cjhebrew}%
-  \def\bxlg@Lamed{\bxlg@warn@font{logoLamed}\textsf{Lamed}}%
+  \bxlg@required@package{logoAleph}{cjhebrew}%
+  \def\bxlg@Aleph{\bxlg@warn@logo{logoAleph}\textsf{Aleph}}%
+  \bxlg@required@package{logoLamed}{cjhebrew}%
+  \def\bxlg@Lamed{\bxlg@warn@logo{logoLamed}\textsf{Lamed}}%
 }
 
 %% \bxlg@arara
@@ -588,8 +604,8 @@
   \def\bxlg@arara{%
     \bxlg@matchlc{0.21}{\usefont{U}{bxlgcomf}{m}{n}arara}}%
 }{%else
-  \bxlg@required@font{arara}{bxlgcomf}%
-  \def\bxlg@arara{\bxlg@warn@font{arara}\textsf{arara}}%
+  \bxlg@required@package{arara}{bxlgcomf}%
+  \def\bxlg@arara{\bxlg@warn@logo{arara}\textsf{arara}}%
 }
 
 %% \bxlg@matchlc{<coeff>}{<text>}
@@ -675,7 +691,8 @@
 \def\bxlg@slant@start{%
   \PackageWarning\bxlg@pkgname
    {Cannot implement synthetic slant, perhaps\MessageBreak
-    'graphics' is not loaded}%
+    'graphicx' (or 'graphics') is not loaded,\MessageBreak
+    reported}%
   \global\let\bxlg@slant@start\relax}
 \let\bxlg@slant@end\relax
 
@@ -778,10 +795,10 @@
 }
 
 %%<+> \bxtexlogoSmcpAs{<value>}
-% valus: auto, real, fake
+% values: auto, real, fake
 \bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoSmcpAs[1]{%
-  \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@smcp@@#1\endcsname
+  \bxlg@csletcs{bxlg@tmpa}{bxlg@smcp@@#1}%
   \ifx\bxlg@tmpa\relax
     \bxlg@err@ukval{#1}%
   \else \let\bxlg@smcp@mode\bxlg@tmpa
@@ -873,11 +890,11 @@
   \def\bxlg@Yukidaruma{\bxtexlogoFontSlant{%
     \bxlg@ipaex{26}\char3 }}%
 }{%else
-  \bxlg@required@font{SuyahTeX}{ipaex-type1}%
-  \def\bxlg@Suyah{\bxlg@warn@font{SuyahTeX}%
+  \bxlg@required@package{SuyahTeX}{ipaex-type1}%
+  \def\bxlg@Suyah{\bxlg@warn@logo{SuyahTeX}%
     \textsf{Suyah}}%
-  \bxlg@required@font{YukidarumaTeX}{ipaex-type1}%
-  \def\bxlg@Yukidaruma{\bxlg@warn@font{YukidarumaTeX}%
+  \bxlg@required@package{YukidarumaTeX}{ipaex-type1}%
+  \def\bxlg@Yukidaruma{\bxlg@warn@logo{YukidarumaTeX}%
     \textsf{Yukidaruma}}%
 }
 
