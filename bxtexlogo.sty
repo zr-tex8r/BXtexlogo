@@ -547,6 +547,12 @@
   \let\bxlg@One\bxlg@One@normal}
 \def\bxlg@kv@one@font@@bboldx{%
   \let\bxlg@One\bxlg@One@BBX}
+%% 'smallcaps=auto|real|fake'
+\define@key{\bxlg@pkgname}{smallcaps}{%
+  \bxlg@handle@enum@key{smallcaps}{#1}{smcp@mode}}
+%% 'fake-smallcaps-for={<spec>,...}'
+\define@key{\bxlg@pkgname}{fake-smallcaps-for}{%
+  \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
 
 %--------------------------------------- font
 
@@ -887,13 +893,13 @@
 %--------------------------------------- small-caps
 
 %% constants
-\chardef\bxlg@smcp@@auto=0
-\chardef\bxlg@smcp@@real=1
-\chardef\bxlg@smcp@@fake=2
+\chardef\bxlg@smcp@mode@@auto=0
+\chardef\bxlg@smcp@mode@@real=1
+\chardef\bxlg@smcp@mode@@fake=2
 
 %% variables
 \let\bxlg@use@fake@list\@empty
-\let\bxlg@smcp@mode\bxlg@smcp@@auto
+\let\bxlg@smcp@mode\bxlg@smcp@mode@@auto
 
 %%<+> \bxtexlogoSmcp{<string>}
 \@ifdefinable\bxtexlogoSmcp{%
@@ -912,26 +918,22 @@
   \endgroup}
 }
 
-%%<+> \bxtexlogoSmcpAs{<value>}
-% values: auto, real, fake
+%%<+D> \bxtexlogoSmcpAs{<value>}
+% [DEPRECATED] values: auto, real, fake
 \bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoSmcpAs[1]{%
-  \bxlg@csletcs{bxlg@tmpa}{bxlg@smcp@@#1}%
-  \ifx\bxlg@tmpa\relax
-    \bxlg@err@ukval{#1}%
-  \else \let\bxlg@smcp@mode\bxlg@tmpa
-  \fi}
+  \bxtexlogosetup{smallcaps=#1}}
 
-%%<+> \bxtexlogoSmcpAsFakeFor
+%%<+Deprecated> \bxtexlogoSmcpAsFakeFor
 \bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoSmcpAsFakeFor[1]{%
-  \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
+  \bxtexlogosetup{fake-smallcaps-for={#1}}}
 
 %% \bxlg@check@smcp
 \def\bxlg@check@smcp{%
-  \ifx\bxlg@smcp@mode\bxlg@smcp@@real
+  \ifx\bxlg@smcp@mode\bxlg@smcp@mode@@real
     \bxlg@oktrue
-  \else\ifx\bxlg@smcp@mode\bxlg@smcp@@fake
+  \else\ifx\bxlg@smcp@mode\bxlg@smcp@mode@@fake
     \bxlg@okfalse
   \else
     \bxlg@check@smcp@manual
@@ -982,10 +984,6 @@
   \expandafter\bxlg@setcurfont@a\bxlg@tempa\bxlg@mk#1}
 \def\bxlg@setcurfont@a#1 #2 #3\bxlg@mk#4{\def#4{#3}}
 
-%% initial setup
-\bxtexlogoSmcpAs{auto}
-\bxtexlogoSmcpAsFakeFor{*/cmss/*,*/lmss/*}
-
 %--------------------------------------- components
 
 %% \bxlg@epsilon
@@ -1019,6 +1017,8 @@
 %--------------------------------------- initial setup
 \bxtexlogosetup{
   one-font=normal,
+  smallcaps=auto,
+  fake-smallcaps-for={*/cmss/*,*/lmss/*},
 }
 %--------------------------------------- done
 \endinput
