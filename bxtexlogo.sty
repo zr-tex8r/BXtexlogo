@@ -52,6 +52,7 @@
 \newif\ifbxlg@forced
 \newif\ifbxlg@onego
 \newif\ifbxlg@hologo@ok
+\newif\ifbxlg@ifincsname@ok
 \newif\ifbxlg@default@import
 
 %% unique tokens
@@ -68,6 +69,13 @@
 \def\bxlg@err@ivkvl#1#2{\PackageError\bxlg@pkgname
  {Invalid value for key '#1':\MessageBreak\@spaces#2}%
  {\@eha}}
+
+%% \ifbxlg@incsname
+% Equivalent to \ifincsname if it is available; otherwise \iffalse.
+\let\ifbxlg@incsname\iffalse
+\edef\bxlg@tmpa{\meaning\ifincsname}\edef\bxlg@tmpb{\string\ifincsname}
+\def\bxlg@next{\let\ifbxlg@incsname\ifincsname \bxlg@ifincsname@oktrue}
+\ifx\bxlg@tmpa\bxlg@tmpb \bxlg@next \fi
 
 %% \bxlg@cond\ifXXX..\fi{<T>}{<F>}
 \@gobbletwo\if\if \def\bxlg@cond#1\fi{%
@@ -112,11 +120,39 @@
   \else \bxlg@cslet{bxlg@#3}\bxlg@tmpa
   \fi}
 
+%% \bxlg@protect
+% Does \protect except in csname.
+\def\bxlg@protect{%
+  \bxlg@cond\ifbxlg@incsname\fi{}{\protect}}
+
+%% \bxlg@semirobustify{<csname>}
+% Replaces '\protect' with '\bxlg@protect' in the definition of
+% a LaTeX-protected command \<csname>.
+\def\bxlg@semirobustify#1{%
+  \expandafter\bxlg@semirobustify@a\csname #1\expandafter\endcsname
+      \csname #1 \endcsname}
+\def\bxlg@semirobustify@a#1#2{%
+  \def#1{\bxlg@protect#2}}
+
 %% \bxlg@logo@do{<LaTeX-form>}{<text-form>}
 % Uses \texorpdfstring if available.
 \def\bxlg@logo@do{%
-  \bxlg@cond\ifx\texorpdfstring\@undefined\fi
-      {\@firstoftwo}{\texorpdfstring}}
+  \bxlg@cond\ifbxlg@incsname\fi{\@secondoftwo}{%
+    \bxlg@cond\ifx\texorpdfstring\@undefined\fi
+        {\@firstoftwo}{\texorpdfstring}}}
+
+%% \bxlg@stringify{<str>}\CScont
+% Expands and detokenizes it.
+\def\bxlg@stringify#1{%
+  \expandafter\expandafter\expandafter\bxlg@stringify@a
+      \expandafter\string\csname bxlg@lcmd@@#1\endcsname\bxlg@end}
+\begingroup\lccode`\?=`\@ \lowercase{%
+  \gdef\bxlg@stringify@a#1??#2\bxlg@end#3{#3{#2}}%
+}\endgroup
+
+%% \bxlg@write@fbstr{<name>}
+\def\bxlg@write@fbstr#1{%
+  \bxlg@stringify{#1}\bxlg@fbstr}
 
 %--------------------------------------- hologo fallback
 
@@ -125,12 +161,17 @@
 % fallback procedure.
 \@ifundefined{hologo}{%
   \bxlg@hologo@okfalse
+  \def\bxlg@fbstr@hologo#1{?#1?}% same as in hologo
   \def\bxlg@hologo#1{%
     \expandafter\bxlg@hologo@a\csname bxlg@holf@@#1\endcsname{#1}}
-  \def\bxlg@hologo@a#1#2{%
-    \bxlg@logo@do{%
-      \bxlg@hologo@do#1{#2}%
-    }{\ifx#1\relax ?#2?\else #2\fi}}
+  \def\bxlg@hologo@a{%
+    \bxlg@logo@do{\bxlg@hologo@do}{\bxlg@hologo@b}}
+  \def\bxlg@hologo@b#1#2{%
+    \bxlg@cond\ifbxlg@incsname\fi{%
+      \bxlg@stringify{#2}\@firstofone
+    }{\bxlg@cond\ifx#1\relax\fi{%
+      \bxlg@stringify{#2}\bxlg@fbstr@hologo
+    }{#2}}}
   \DeclareRobustCommand*\bxlg@hologo@do[2]{%
     \PackageError\bxlg@pkgname{%
       \ifx#1\relax
@@ -140,7 +181,7 @@
         because the package 'hologo' is not found%
       \fi
     }{\@ehc}%
-    \ifx#1\relax ?#2?\else #2\fi}
+    \bxlg@hologo@b#1{#2}}
   % For compatibility with old versions, \hologo itself as fallback
   % is alsod defined. This feature will be abolished in future.
   \@namedef{hologo}{\bxlg@hologo}
@@ -150,7 +191,7 @@
 }
 %%<+> \bxtexlogoHologo{<name>}
 % Just a public name for \bxlg@hologo.
-\def\bxtexlogoHologo{\bxlg@hologo}
+\newcommand*\bxtexlogoHologo{\bxlg@hologo}
 
 %--------------------------------------- registration
 
@@ -198,7 +239,8 @@
       \endcsname\csname bxlg@logo@@#1\endcsname}
 \@onlypreamble\bxlg@declare@d
 \def\bxlg@declare@d#1#2#3{%\LCMD\LOGO{<text>}
-    \ifx\bxlg@mk#3\bxlg@mk \gdef#1{\protect#2}%
+    \ifx\bxlg@mk#3\bxlg@mk
+      \gdef#1{\bxlg@logo@do{\protect#2}{#2}}%
     \else \gdef#1{\bxlg@logo@do{\protect#2}{#3}}%
     \fi
     \xdef#2{\the\toks@}%
@@ -445,12 +487,21 @@
 % NOTE: LaTeX-protection is ignored in PDF-strings,
 % whereas engine-protection does not work well.
 
+%% \bxlg@fbstr{<name>}
+% The string form for writing unknown logo names.
+\def\bxlg@fbstr#1{}% currently empty
+
 %%<*> \bxtexlogo{<name>}
-\bxlg@checkdefinable
+\@ifdefinable\bxtexlogo{%
 \DeclareRobustCommand*\bxtexlogo[1]{%
   \expandafter\bxlg@use@a\csname bxlg@lcmd@@#1\endcsname{#1}}
+\bxlg@semirobustify{bxtexlogo}
 \def\bxlg@use@a#1#2{%
-  \bxlg@cond\ifx#1\relax\fi{\bxlg@err@uknam{#2}}{#1}}
+  \bxlg@cond\ifx#1\relax\fi{\bxlg@use@b{#2}}{#1}}
+\def\bxlg@use@b#1{%{<name>}
+  \bxlg@logo@do{\bxlg@err@uknam{#1}}{}%
+  \bxlg@write@fbstr{#1}}
+}
 
 %%<+> \bxtexlogoTest
 % The test output.
