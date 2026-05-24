@@ -729,6 +729,8 @@
   \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=3 \fi
   \def\bxlg@tmpa{\pdfextension restore\relax}%
   \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=4 \fi
+  \def\bxlg@tmpa{\special{dvisvgm:bbox unlock}\special{dvisvgm:raw </g>}}%
+  \ifx\bxlg@tmpa\Grot@end \chardef\bxlg@tmpb=5 \fi
   \def\bxlg@tmpa{dvipdfmx.def}%
   \ifx\bxlg@tmpa\Gin@driver \chardef\bxlg@tmpb=2 \fi
   \def\bxlg@tmpa{xetex.def}%
@@ -737,7 +739,11 @@
   \ifcase\bxlg@tmpb
     % unknown, then leave unimplmented
   \or % dvips
-    % TODO: implement
+    \gdef\bxlg@slant@start{\special{%
+      ps: gsave currentpoint currentpoint translate
+      [1 0 \bxlg@neg@slant@val\space 1 0 0]
+      concat neg exch neg exch translate}}
+    \gdef\bxlg@slant@end{\special{ps: currentpoint grestore moveto}}
   \or % dvipdfmx
     \gdef\bxlg@slant@start{\special{%
       pdf:btrans matrix 1 0 \bxlg@slant@val\space 1 0 0}}
@@ -751,10 +757,22 @@
       \pdfextension save\relax
       \pdfextension setmatrix{1 0 \bxlg@slant@val\space 1}}
     \gdef\bxlg@slant@end{\pdfextension restore\relax}
+  \or % dvisvgm
+    \gdef\bxlg@slant@start{%
+      \special{dvisvgm:raw <g transform="translate({?x},{?y})%
+        matrix(1 0 \bxlg@neg@slant@val\space 1 0 0)%
+        scale(-1)translate({?x},{?y})scale(-1)">}}
+    \gdef\bxlg@slant@end{\special{dvisvgm:raw </g>}}
   \fi
   \global\let\bxlg@implement@slant\relax
   \endgroup}
 \AtBeginDocument{\bxlg@implement@slant}
+
+%% \bxlg@neg@slant@val
+\def\bxlg@neg@slant@val{%
+  \expandafter\bxlg@neg@slant@val@a\bxlg@slant@val\relax}
+\def\bxlg@neg@slant@val@a#1#2\relax{%
+  \if#1-\else-#1\fi#2}
 
 %% \bxlg@fallback@slant
 \def\bxlg@fallback@slant{0.167}
