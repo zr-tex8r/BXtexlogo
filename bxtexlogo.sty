@@ -25,6 +25,7 @@
 \IfFileExists{hologo.sty}{%
 \RequirePackageWithOptions{hologo}
 }{}
+\RequirePackage{keyval}\relax
 
 %% hologo import list
 \def\bxlg@hologo@import@primary{%
@@ -63,6 +64,9 @@
 \def\bxlg@err@uknam#1{\PackageError\bxlg@pkgname
  {Unknown logo name '#1'}%
  {\@ehc}}
+\def\bxlg@err@ivkvl#1#2{\PackageError\bxlg@pkgname
+ {Invalid value for key '#1':\MessageBreak\@spaces#2}%
+ {\@eha}}
 
 %% \bxlg@cond\ifXXX..\fi{<T>}{<F>}
 \@gobbletwo\if\if \def\bxlg@cond#1\fi{%
@@ -86,6 +90,19 @@
   \@ifdefinable#3{%
     \def\bxlg@next{#1#3\DeclareRobustCommand*#3}}%
   \bxlg@next}
+
+%% \bxlg@handle@key{<key>}{<value>}{<name>}
+\def\bxlg@handle@key#1#2#3{%
+  \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@#3\endcsname
+  \ifx\bxlg@tmpa\relax \bxlg@err@ivkvl{#1}{#2}%
+  \else \bxlg@tmpa
+  \fi}
+%% \bxlg@handle@enum@key{<key>}{<value>}{<base-name>}
+\def\bxlg@handle@enum@key#1#2#3{%
+  \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@#3@@#2\endcsname
+  \ifx\bxlg@tmpa\relax \bxlg@err@ivkvl{#1}{#2}%
+  \else \bxlg@cslet{bxlg@#3}\bxlg@tmpa
+  \fi}
 
 %% \bxlg@logo@do{<LaTeX-form>}{<text-form>}
 % Uses \texorpdfstring if available.
@@ -410,6 +427,11 @@
   \par \let\do\bxlg@logo@test@do \bxlg@list}
 \def\bxlg@logo@test@do#1{%
   \texttt{#1}:\quad\@nameuse{bxlg@logo@@#1}\par}
+
+%%<*> \bxtexlogosetup{<key>=<value>,...}
+\bxlg@checkdefinable
+\DeclareRobustCommand*\bxtexlogosetup{%
+  \setkeys{\bxlg@pkgname}}
 
 %--------------------------------------- font
 
@@ -859,5 +881,8 @@
     \textsf{Yukidaruma}}%
 }
 
+%--------------------------------------- initial setup
+\bxtexlogosetup{
+}
 %--------------------------------------- done
 \endinput
