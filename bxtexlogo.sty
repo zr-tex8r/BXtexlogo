@@ -52,6 +52,7 @@
 \newif\ifbxlg@forced
 \newif\ifbxlg@onego
 \newif\ifbxlg@hologo@ok
+\newif\ifbxlg@default@import
 
 %% unique tokens
 \def\bxlg@end{\bxlg@end@}
@@ -377,7 +378,11 @@
   \fi}
 \def\bxlg@import@one@a#1#2{%
   \bxDebug{defined: \string#1}%
-  \global\let#1#2}
+  \ifbxlg@default@import
+    \gdef#1{\bxlg@mark@default@import #2}%
+  \else
+    \global\let#1#2%
+  \fi}
 
 %% \bxlg@import@all{<level>}
 \@onlypreamble\bxlg@import@all
@@ -416,8 +421,24 @@
 %% \bxlg@default@import
 \@onlypreamble\bxlg@default@import
 \def\bxlg@default@import{%
-  \bxtexlogoimport{*}}
+  \bxlg@default@importtrue
+  \bxtexlogoimport{*}%
+  \bxlg@default@importfalse}
 \AtBeginDocument{\bxlg@default@import}
+%% \bxlg@mark@default@import
+\def\bxlg@mark@default@import{%
+  \bxlg@logo@do{\global\bxlg@default@importtrue}{}}
+\def\bxlg@mark@default@import@a{%
+  \ifbxlg@default@import
+    \bxlg@mark@default@import@b
+  \fi}
+\def\bxlg@mark@default@import@b{%
+  \PackageWarning\bxlg@pkgname
+   {Implicit logo import is assumed!!\MessageBreak
+    This feature will be abolished in future, so\MessageBreak
+    you must write an explicit import command:\MessageBreak
+    \@spaces \string\bxtexlogoimport{*}\@gobbletwo}}
+\AtEndDocument{\bxlg@mark@default@import@a}
 
 %--------------------------------------- user interface
 
