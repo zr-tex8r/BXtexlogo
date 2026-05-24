@@ -75,6 +75,38 @@ All the options are passed to hologo.
   * `\bxtexlogo{<name>}: Outputs the logo of name `<name>`. This form can
     be always used, whether the logo is imported or not.
 
+### Parameter settings
+
+The `\bxtexlogosetup` command can be used to configure the behavior of
+the package.
+
+    \bxtexlogosetup{<key>=<value>,...
+
+* Boolean values are specified as `true` or `false`.
+
+The following setting keys are available:
+
+  * `smallcaps=<value>`: Whether or not fake smallcaps is used.
+      - `real`: The real smallcaps font face (shape `sc`) is used.
+      - `fake`: The fake smallcaps (capital letters in reduced size)
+        is used.
+      - `auto` (default): The fake smallcaps is used only for the
+        following specific font faces:
+        CM Sans Serif and LM Sans Serif.
+  * `one-font=<value>`: Which font family is used for the letter ‘1’
+    in the 1TeX logo.
+      - `normal`: The normal setting, where the dsrom family is used
+        most preferentially. This setting lacks bold series.
+      - `bboldx`: The bboldx family is always used. This family has
+        bold series.
+  * `hologo-for-basic=<bool>`: This parameter controls how to render
+    the `TeX`, `LaTeX` or `LaTeX2e` part of the logos provided by this
+    package (such as `XyMTeX`). If true, the definitions provided by the
+    hologo package are used; if false, the current definitions of the
+    commands `\TeX`, `\LaTeX` and `\LaTeXe` are used.
+  * `ghost=<bool>`: Whether or not a 'ghost' is inserted around logos
+    in order to improve rendering in the Japanese typesetting.
+
 ### Avaiable logo names
 
 The logo names supported by this package are divided into two classes:
@@ -190,27 +222,59 @@ sample document for detail.
     etc.) to the logos provided by this package.
 
 
+The bxtexlogo-primary Package
+-----------------------------
+
+### Package Loading
+
+    \usepackage[<option>,...]{bxtexlogo-primary}
+
+### Usage
+
+This is an alternative entrypoint to the bxtexlogo package. It loads
+bxtexlogo and “reserves” the bulk import of all the primary logos
+as the default action. If the author never uses `\bxtexlogoimport`,
+then the package runs `\bxtexlogoimport{*}` in the begin-document hook.
+
+*Note.* In fact, the bxtexlogo package itself has had the same feature,
+despite that the documentation says nothing about it. Starting with
+v0.8, this feature is *deprecated* for future removal and a warning will
+be issued for the use of implicitly imported commands. You should use
+the bxtexlogo-primary package instead if you need the feature.
+
+
 Revision History
 ----------------
+
+  * Version 0.8 ‹2026/05/23›
+      - More logo: `Prote`.
+      - Add `\bxtexlogosetup` for parameter setting.
+      - Add parameters: `one-font`, `smallcaps`, `fake-smallcaps-for`,
+        `hologo-for-basic`, `ghost`.
+      - Better support for dvips and dvisvgm.
+      - Support for use in csname strings (as per hologo).
+      - Support for “ghost” insertion for Japanese typesetting.
+      - Warn the use of implicit imports.
+      - Add new package `bxtexlogo-primary`.
 
   * Version 0.7a ‹2026/05/15›
       - Bug fix.
 
   * Version 0.7 ‹2026/04/29›
-      - More logos: HiLaTeX, LuaMetaTeX, lowe.
+      - More logos: `HiLaTeX`, `LuaMetaTeX`, `lowe`.
       - Bug fix.
 
   * Version 0.6 ‹2022/05/05›
-      - More logos: HiTeX, TeX--XeT.
+      - More logos: `HiTeX`, `TeX--XeT`.
       - Add `\bxtexlogo`.
       - Add `\bxtexlogoReflect`.
 
   * Version 0.5 ‹2021/11/11›
-      - More logos: OpTeX, CSTUG.
+      - More logos: `OpTeX`, `CSTUG`.
       - (experimental) Add `\bxtexlogoUseBboldx`.
 
   * Version 0.4 ‹2018/03/11›
-      - More logos: ApTeX, DVIPDFMx.
+      - More logos: `ApTeX`, `DVIPDFMx`.
       - Add `\bxtexlogoItalicOrSlant`.
 
   * Version 0.3 ‹2017/11/11›
