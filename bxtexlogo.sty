@@ -540,6 +540,13 @@
 \bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogosetup{%
   \setkeys{\bxlg@pkgname}}
+%% 'one-font=normal|bboldx'
+\define@key{\bxlg@pkgname}{one-font}{%
+  \bxlg@handle@key{one-font}{#1}{kv@one@font@@#1}}
+\def\bxlg@kv@one@font@@normal{%
+  \let\bxlg@One\bxlg@One@normal}
+\def\bxlg@kv@one@font@@bboldx{%
+  \let\bxlg@One\bxlg@One@BBX}
 
 %--------------------------------------- font
 
@@ -645,23 +652,19 @@
   \DeclareFontShape{U}{bxlgoneBBX}{b}{n}{<->s*[1.44]BBOLDX-Regular}{}%
   \def\bxlg@One@BBX{\bxtexlogoFontSlant{%
     \usefont{U}{bxlgoneBBX}{\f@series}{n}1}}%
-}
+}{%else
+  \bxlg@required@package{one-font=bboldx}{bboldx}%
+  \def\bxlg@kv@one@font@@bboldx{%
+    \bxlg@warn@setting{one-font=bboldx}}}
 
-%%<+>\bxtexlogoUseBboldx
-%%<+>\bxtexlogoNoUseBboldx
+%%<+D>\bxtexlogoUseBboldx:   [DEPRECATED}
+%%<+D>\bxtexlogoNoUseBboldx: [DEPRECATED}
 \bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoUseBboldx{%
-  \let\bxlg@One\bxlg@One@BBX}
+  \bxtexlogosetup{one-font=bboldx}}
 \bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoNoUseBboldx{%
-  \let\bxlg@One\bxlg@One@normal}
-\ifx\bxlg@One@BBX\@undefined
-  \@namedef{bxtexlogoUseBboldx }{%
-    \PackageError\bxlg@pkgname
-     {Package 'bboldx' is not available}
-     {\@eha}
-    \@namedef{bxtexlogoUseBboldx }{}}
-\fi
+  \bxtexlogosetup{one-font=normal}}
 
 %% \bxlg@select@OTi
 \def\bxlg@select@OTi{%
@@ -1015,6 +1018,7 @@
 
 %--------------------------------------- initial setup
 \bxtexlogosetup{
+  one-font=normal,
 }
 %--------------------------------------- done
 \endinput
