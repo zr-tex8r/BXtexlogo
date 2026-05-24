@@ -207,6 +207,9 @@
 %\[bxlg@lcmd@@<name>]% core definition
 %\[bxlg@holf@@<name>]% hologo flag
 
+%% \bxlg@ghosted
+\let\bxlg@ghosted\@firstofone
+
 %%<+> \bxtexlogoDeclare{<level>}{<name>}[<text-form>]{<LaTeX-form>}
 % If [<text-form>] is omitted, it defaults to <name>.
 % If <text-form> is empty, <LaTeX-form> is always used.
@@ -240,8 +243,8 @@
 \@onlypreamble\bxlg@declare@d
 \def\bxlg@declare@d#1#2#3{%\LCMD\LOGO{<text>}
     \ifx\bxlg@mk#3\bxlg@mk
-      \gdef#1{\bxlg@logo@do{\protect#2}{#2}}%
-    \else \gdef#1{\bxlg@logo@do{\protect#2}{#3}}%
+      \gdef#1{\bxlg@logo@do{\bxlg@ghosted{\protect#2}}{#2}}%
+    \else \gdef#1{\bxlg@logo@do{\bxlg@ghosted{\protect#2}}{#3}}%
     \fi
     \xdef#2{\the\toks@}%
   \endgroup}
@@ -553,6 +556,19 @@
 %% 'fake-smallcaps-for={<spec>,...}'
 \define@key{\bxlg@pkgname}{fake-smallcaps-for}{%
   \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
+%% 'ghost=<bool>'
+\define@key{\bxlg@pkgname}{ghost}[true]{%
+  \bxlg@handle@key{ghost}{#1}{kv@ghost@@#1}}
+\def\bxlg@kv@ghost@@true{%
+  \ifx\eghostguarded\@undefined
+    \PackageWarning\bxlg@pkgname
+     {Setting 'ghost=true' cannot be applied\MessageBreak
+      because the package 'bxghost' is not loaded,\MessageBreak
+      reported}%
+  \else \let\bxlg@ghosted\eghostguarded
+  \fi}
+\def\bxlg@kv@ghost@@false{%
+  \let\bxlg@ghosted\@firstofone}
 %% 'hologo-for-basic=<bool>'
 \define@key{\bxlg@pkgname}{hologo-for-basic}[true]{%
   \bxlg@handle@key{hologo-for-basic}{#1}{kv@hologo@for@basic@@#1}}
