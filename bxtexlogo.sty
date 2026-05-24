@@ -264,16 +264,16 @@
 %--------------------------------------- registry
 
 %% very famous somewhere
-\bxtexlogoDeclare{primary}{pTeX}{p\kern-.05em\TeX}
+\bxtexlogoDeclare{primary}{pTeX}{p\kern-.05em\bxlg@TeX}
 \bxtexlogoDeclare{primary}{epTeX}[e-pTeX]{%
   \mbox{\bxlg@epsilon-\bxlg@logo@@pTeX}}
-\bxtexlogoDeclare{primary}{pLaTeX}[]{p\LaTeX}
-\bxtexlogoDeclare{primary}{pLaTeXe}[]{p\LaTeXe}
-\bxtexlogoDeclare{primary}{upTeX}{up\kern-.05em \TeX}
+\bxtexlogoDeclare{primary}{pLaTeX}[]{p\bxlg@LaTeX}
+\bxtexlogoDeclare{primary}{pLaTeXe}[]{p\bxlg@LaTeXe}
+\bxtexlogoDeclare{primary}{upTeX}{up\kern-.05em \bxlg@TeX}
 \bxtexlogoDeclare{primary}{eupTeX}[e-upTeX]{%
   \mbox{\bxlg@epsilon-\bxlg@logo@@upTeX}}
-\bxtexlogoDeclare{primary}{upLaTeX}[]{up\LaTeX}
-\bxtexlogoDeclare{primary}{upLaTeXe}[]{up\LaTeXe}
+\bxtexlogoDeclare{primary}{upLaTeX}[]{up\bxlg@LaTeX}
+\bxtexlogoDeclare{primary}{upLaTeXe}[]{up\bxlg@LaTeXe}
 \bxtexlogoDeclare{primary}{JBibTeX}{%
   \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.15}\bxlg@hologo{BibTeX}}
 \bxtexlogoDeclare{primary}{pBibTeX}[]{p\bxlg@hologo{BibTeX}}
@@ -283,17 +283,17 @@
 
 %% old or not-so-famous
 \bxtexlogoDeclare{secondary}{JTeX}{%
-  \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.17}\TeX}
+  \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.17}\bxlg@TeX}
 \bxtexlogoDeclare{secondary}{JLaTeX}{%
   \leavevmode\lower.5ex\hbox{J}\bxlg@akern{-.15}\LaTeX}
 \bxtexlogoDeclare{secondary}{pTeXsT}{%
-  p\kern-.21em \TeX\kern-.10em s\kern-.21em T\bxlg@nonuc}
+  p\kern-.21em \bxlg@TeX\kern-.10em s\kern-.21em T\bxlg@nonuc}
 \bxtexlogoDeclare{secondary}{XyM}{%
   X\kern-.30em %
   \smash{\raise.50ex\hbox to0.8em{\hss\bxlg@Grk{7}\hss}}%
   \kern -.30em M}
 \bxtexlogoDeclare{secondary}{XyMTeX}{%
-  \bxlg@logo@@XyM \kern-.1em \TeX}
+  \bxlg@logo@@XyM \kern-.1em \bxlg@TeX}
 \bxtexlogoDeclare{secondary}{KET}{%
   K\kern-.16em \lower.5ex\hbox{E}\kern-.12emT}
 \bxtexlogoDeclare{secondary}{KETpic}{%
@@ -321,17 +321,17 @@
   \begingroup \setbox\z@\hbox{T}%
     \vbox to\ht\z@{\kern.05em \hbox{\bxlg@smaller{A}}\vss}%
   \endgroup
-  \kern-.23em \TeX}
+  \kern-.23em \bxlg@TeX}
 \bxtexlogoDeclare{secondary}{ApTeX}{A\kern-.08em \bxlg@logo@@pTeX}
 \bxtexlogoDeclare{secondary}{DVIPDFMx}{% obsolete logo
   DVI\-PDFM\bxtexlogoItalicOrSlant{x}}
-\bxtexlogoDeclare{secondary}{OpTeX}{Op\kern-.05em \TeX}
+\bxtexlogoDeclare{secondary}{OpTeX}{Op\kern-.05em \bxlg@TeX}
 \bxtexlogoDeclare{secondary}{CSTUG}{\leavevmode
   \bxlg@cal{C}\kern-.3em \lower.67ex\hbox{\bxlg@cal{S}}%
   \kern-.145em TUG\bxlg@nonuc}
-\bxtexlogoDeclare{secondary}{HiTeX}[]{Hi\TeX}
+\bxtexlogoDeclare{secondary}{HiTeX}[]{Hi\bxlg@TeX}
 \bxtexlogoDeclare{secondary}{TeXXeT}[TeX--XeT]{%
-  \TeX-\textbf{-}\bxlg@logo@@XeT}
+  \bxlg@TeX-\textbf{-}\bxlg@logo@@XeT}
 
 %% fancy things (Not!)
 \bxtexlogoDeclare{secondary}{BaSiX}{%
@@ -339,27 +339,27 @@
   S\kern-.1em \lower.45ex\hbox{I}\kern-.1em X\bxlg@nonuc}
 \bxtexlogoDeclare{secondary}{logoon}[on]{\bxtexlogoSmcp{on}}
 \bxtexlogoDeclare{secondary}{TeXonLaTeX}[TeX on LaTeX]{%
-  \TeX\ \bxlg@logo@@logoon\ \LaTeX}
+  \bxlg@TeX\ \bxlg@logo@@logoon\ \LaTeX}
 \bxtexlogoDeclare{secondary}{OneTeX}[1TeX]{%
-  \bxlg@One\kern-0.2em \TeX}
-\bxtexlogoDeclare{secondary}{SuyahTeX}{\bxlg@Suyah\TeX}
+  \bxlg@One\kern-0.2em \bxlg@TeX}
+\bxtexlogoDeclare{secondary}{SuyahTeX}{\bxlg@Suyah\bxlg@TeX}
 
 %% logos of "no-level"
 \bxtexlogoDeclare{}{LuaMetaTeX}{%
-  LuaMeta\kern-.083333em \TeX}
-\bxtexlogoDeclare{}{HiLaTeX}[]{Hi\LaTeX}
+  LuaMeta\kern-.083333em \bxlg@TeX}
+\bxtexlogoDeclare{}{HiLaTeX}[]{Hi\bxlg@LaTeX}
 \bxtexlogoDeclare{}{XeT}{%
-  \textbf{\bxtexlogoReflect{\TeX}{XeT}}\bxlg@nonuc}
+  \textbf{\bxtexlogoReflect{\bxlg@TeX}{XeT}}\bxlg@nonuc}
 \bxtexlogoDeclare{}{e}{\bxlg@epsilon}
 \bxtexlogoDeclare{}{lowe}[e]{\bxlg@in@math{_{\textstyle\varepsilon}}}
 \bxtexlogoDeclare{}{1TeX}{\bxlg@logo@@OneTeX}%alias
 \bxtexlogoDeclare{}{LuahbTeX}[LuaHBTeX]{% experimental
-  Lua\bxtexlogoSmcp{hb}\kern-.05em \TeX}
+  Lua\bxtexlogoSmcp{hb}\kern-.05em \bxlg@TeX}
 \bxtexlogoDeclare{}{arara}{\bxlg@arara}
 \bxtexlogoDeclare{}{One}[1]{\bxlg@One}
 \bxtexlogoDeclare{}{Suyah}{\bxlg@Suyah}
 \bxtexlogoDeclare{}{Yukidaruma}{\bxlg@Yukidaruma}
-\bxtexlogoDeclare{}{YukidarumaTeX}{\bxlg@Yukidaruma\TeX}
+\bxtexlogoDeclare{}{YukidarumaTeX}{\bxlg@Yukidaruma\bxlg@TeX}
 
 %% other than TeX
 \bxtexlogoDeclare{secondary}{SATySFi}{%
@@ -481,6 +481,31 @@
     you must write an explicit import command:\MessageBreak
     \@spaces \string\bxtexlogoimport{*}\@gobbletwo}}
 \AtEndDocument{\bxlg@mark@default@import@a}
+
+%--------------------------------------- basic logo matters
+
+%% \bxlg@if@hologo@for@basic
+\let\bxlg@if@hologo@for@basic\@secondoftwo
+
+%% \bxlg@declare@basic\CS{<name>}{<in-cs>}
+\@onlypreamble\bxlg@declare@basic
+\def\bxlg@declare@basic#1#2{%\CS{<name>}
+  \expandafter\bxlg@declare@basic@a\csname#2\expandafter\endcsname
+      \csname bxlg@incs@@#2\expandafter\endcsname
+      \csname bxlg@lcmd@@#2\expandafter\endcsname
+      \csname bxlg@logo@@#2\endcsname#1}
+\def\bxlg@declare@basic@a#1#2#3#4#5#6{%\NAME\INCS\LCMD\LOGO\CS{<in-cs>}
+  \def#5{%
+    \bxlg@cond\ifbxlg@incsname\fi#2{%else
+    \bxlg@if@hologo@for@basic#4{%else
+      % if the logo is imported, use LOGO macro
+      \bxlg@cond\ifx#1#3\fi#4#1}}}%
+  \def#2{#6}}
+
+%% \bxlg@TeX / \bxlg@LaTeX / \bxlg@LaTeXe
+\bxlg@declare@basic\bxlg@TeX{TeX}{TeX}
+\bxlg@declare@basic\bxlg@LaTeX{LaTeX}{LaTeX}
+\bxlg@declare@basic\bxlg@LaTeXe{LaTeXe}{LaTeX2e}
 
 %--------------------------------------- user interface
 
