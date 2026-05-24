@@ -553,6 +553,13 @@
 %% 'fake-smallcaps-for={<spec>,...}'
 \define@key{\bxlg@pkgname}{fake-smallcaps-for}{%
   \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
+%% 'hologo-for-basic=<bool>'
+\define@key{\bxlg@pkgname}{hologo-for-basic}[true]{%
+  \bxlg@handle@key{hologo-for-basic}{#1}{kv@hologo@for@basic@@#1}}
+\def\bxlg@kv@hologo@for@basic@@true{%
+  \let\bxlg@if@hologo@for@basic\@firstoftwo}
+\def\bxlg@kv@hologo@for@basic@@false{%
+  \let\bxlg@if@hologo@for@basic\@secondoftwo}
 
 %--------------------------------------- font
 
