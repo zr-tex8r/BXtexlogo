@@ -73,6 +73,20 @@
 \@gobble\if \long\def\bxlg@jump@exit#1\bxlg@exit{\fi}
 \let\bxlg@exit\relax
 
+%% \bxlg@checkdefinable \DeclareRobustCommand*\CS...
+% Does \DeclareRobustCommand* with checking definability.
+\def\bxlg@checkdefinable{%
+  \bxlg@checkdef@a\@gobble}
+%% \bxlg@preamble@checkdefinable \DeclareRobustCommand*\CS...
+% It is \bxlg@checkdefinable plus \@onlypreamble declaration.
+\def\bxlg@preamble@checkdefinable{%
+  \bxlg@checkdef@a\@onlypreamble}
+\def\bxlg@checkdef@a#1#2*#3{%
+  \def\bxlg@next{\providecommand\bxlg@next}%
+  \@ifdefinable#3{%
+    \def\bxlg@next{#1#3\DeclareRobustCommand*#3}}%
+  \bxlg@next}
+
 %% \bxlg@logo@do{<LaTeX-form>}{<text-form>}
 % Uses \texorpdfstring if available.
 \def\bxlg@logo@do{%
@@ -383,21 +397,19 @@
 % whereas engine-protection does not work well.
 
 %%<*> \bxtexlogo{<name>}
-\@ifdefinable\bxtexlogo{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogo[1]{%
   \expandafter\bxlg@use@a\csname bxlg@lcmd@@#1\endcsname{#1}}
 \def\bxlg@use@a#1#2{%
   \bxlg@cond\ifx#1\relax\fi{\bxlg@err@uknam{#2}}{#1}}
-}
 
 %%<+> \bxtexlogoTest
 % The test output.
-\@ifdefinable\bxtexlogoTest{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoTest{%
   \par \let\do\bxlg@logo@test@do \bxlg@list}
 \def\bxlg@logo@test@do#1{%
   \texttt{#1}:\quad\@nameuse{bxlg@logo@@#1}\par}
-}
 
 %--------------------------------------- font
 
@@ -502,8 +514,10 @@
 
 %%<+>\bxtexlogoUseBboldx
 %%<+>\bxtexlogoNoUseBboldx
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoUseBboldx{%
   \let\bxlg@One\bxlg@One@BBX}
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoNoUseBboldx{%
   \let\bxlg@One\bxlg@One@normal}
 \ifx\bxlg@One@BBX\@undefined
@@ -607,18 +621,16 @@
 %%<+> \bxtexlogoFontSlant
 % Uses the slant value of the current font.
 %%<+> \bxtexlogoSlant{<real>}
-\@ifdefinable\bxtexlogoFontSlant{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoFontSlant{%
   \begingroup
     \@tempdima\fontdimen\@ne\font
     \bxlg@slant@a}
-}
-\@ifdefinable\bxtexlogoSlant{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoSlant[1]{%
   \begingroup
     \@tempdima=#1\p@
     \bxlg@slant@a}
-}
 \def\bxlg@slant@a{%
   \bxlg@implement@slant
   \edef\bxlg@slant@val{\strip@pt\@tempdima}%
@@ -689,7 +701,7 @@
 
 %%<+> \bxtexlogoItalicOrSlant
 % Uses the slant value of the current font.
-\@ifdefinable\bxtexlogoItalicOrSlant{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoItalicOrSlant[1]{%
   \textit{%
     \@tempdima\fontdimen\@ne\font
@@ -700,12 +712,11 @@
       \@tempdima\bxlg@fallback@slant\bxlg@g@height
       \kern.75\@tempdima
     \fi}}
-}
 
 %--------------------------------------- reflect
 
 %%<+> \bxtexlogoReflect{<text>}{<fallback>}
-\@ifdefinable\bxtexlogoReflect{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoReflect{%
   \bxlg@cond\ifx\reflectbox\@undefined\fi
     {\bxlg@reflect@b}{\bxlg@reflect@a}}
@@ -715,7 +726,6 @@
    {Package 'graphics' is not loaded,\MessageBreak reported}%
   \global\let\bxlg@reflect@b\@secondoftwo
   \@secondoftwo}
-}
 
 %--------------------------------------- small-caps
 
@@ -747,20 +757,18 @@
 
 %%<+> \bxtexlogoSmcpAs{<value>}
 % valus: auto, real, fake
-\@ifdefinable\bxtexlogoSmcpAs{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoSmcpAs[1]{%
   \expandafter\let\expandafter\bxlg@tmpa\csname bxlg@smcp@@#1\endcsname
   \ifx\bxlg@tmpa\relax
     \bxlg@err@ukval{#1}%
   \else \let\bxlg@smcp@mode\bxlg@tmpa
   \fi}
-}
 
 %%<+> \bxtexlogoSmcpAsFakeFor
-\@ifdefinable\bxtexlogoSmcpAsFakeFor{%
+\bxlg@checkdefinable
 \DeclareRobustCommand*\bxtexlogoSmcpAsFakeFor[1]{%
   \edef\bxlg@use@fake@list{\bxlg@use@fake@list,#1}}
-}
 
 %% \bxlg@check@smcp
 \def\bxlg@check@smcp{%
